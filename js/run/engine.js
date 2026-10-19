@@ -175,11 +175,12 @@ export function start(root, params) {
     const before = state.guide;
     state.guide = next;
     if (before !== next && (next === "leave" || before === "leave")) return renderView();
-    root.querySelectorAll("[data-guided]").forEach((el) => { el.classList.remove("blink"); el.removeAttribute("data-guided"); });
+    root.querySelectorAll("[data-guided]").forEach((el) => { el.classList.remove("blink", "guide-ring"); el.removeAttribute("data-guided"); });
     // Phase 1 guides only by the blinking target inside the phone: no text outside it.
     if (!next) return;
     const target = root.querySelector(`[data-go="${next}"]`);
-    if (target) { target.classList.add("blink"); target.setAttribute("data-guided", ""); }
+    // A reel card is a large image, so it gets a still ring; flashing it is hard on the eyes.
+    if (target) { target.classList.add(target.classList.contains("reelcard") ? "guide-ring" : "blink"); target.setAttribute("data-guided", ""); }
   }
 
   // An open 피드 DM room plays a soft in-chat pop for each message from someone else (as the app does);
