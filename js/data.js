@@ -111,7 +111,7 @@ export const MONOLOGUE = [
   ["", "왜 다들 내가 했다고<br>생각하는 거야."],
   ["", "누구한테 말해야 할지<br>모르겠어."],
 ];
-export const REWIND_PROMPT = ["", "이 밤은 어디서부터<br>시작됐을까?"];
+export const REWIND_PROMPT = ["", "어떻게 이런 일이<br>일어난 걸까?"];
 
 export const ROTATE_NOTE = "휴대폰을 세로로 돌려 주세요";
 

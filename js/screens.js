@@ -55,7 +55,7 @@ export const STAGES = [
       ["talk-mom", "톡 엄마", "오후 3:07의 평범한 대화 아래 \"수아 엄마가 학부모 단톡방에 영상을 올렸대\".", talk.talkRoomMom],
       ["storm", "폭풍 2:50 → 정지 2:55", "알림 20개가 0.25초 간격으로 기울어진 채 쌓이고, 화면이 얼어붙으며 \"알림 47\". 음악이 끊긴다.", ios.storm],
       ["monologue", "정지 뒤 독백", `검은 화면에 한 줄씩(2.8초 간격): ${MONOLOGUE.map(([, main]) => main.replace("<br>", " ")).join(" / ")}`, () => intro.monoCard(...MONOLOGUE[1])],
-      ["rewind-prompt", "되감기 버튼", "\"이 밤은 어디서부터 시작됐을까?\"와 \"되감기\". 화면 어디를 눌러도 2단계가 시작된다.", () => intro.monoCard(...REWIND_PROMPT, '<button class="rw-go">되감기</button>')],
+      ["rewind-prompt", "되감기 버튼", "\"어떻게 이런 일이 일어난 걸까?\"와 \"되감기\". 화면 어디를 눌러도 2단계가 시작된다.", () => intro.monoCard(...REWIND_PROMPT, '<button class="rw-go">되감기</button>')],
     ],
   },
   {
