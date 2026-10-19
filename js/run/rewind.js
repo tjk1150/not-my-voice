@@ -32,7 +32,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
 
   const show = (html) => { scr.innerHTML = html; icons(); };
   const layer = (html = "") => { ov.innerHTML = R.counter(count) + html; icons(); };
-  const hint = (text) => { side.hint.textContent = text; };
   const toast = (text) => {
     ov.querySelector(".rw-toast")?.remove();
     ov.insertAdjacentHTML("beforeend", R.toast(text));
@@ -65,7 +64,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
   async function ask(stop, screen) {
     show(screen);
     layer(R.dialog(stop));
-    hint("안내를 읽고 \"해 보기\"를 누르세요");
     await tap("go");
     layer();
   }
@@ -74,7 +72,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     const cards = notifs.filter((item) => item.tag === stop.tag);
     const from = count;
     layer(R.pile(cards));
-    hint("이 원인에서 나온 알림이 사라져요");
     await wait(1100);
     for (const el of ov.querySelectorAll(".rw-c")) {
       el.classList.add("crack");
@@ -85,7 +82,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     await wait(600);
     layer(R.lesson(stop.lesson, from, count));
     sfx.chime();
-    hint("");
     await tap("go");
   }
 
@@ -93,15 +89,12 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     const clock = clockText(stop.at);
     await ask(stop, R.reelAt(clock));
     layer(R.captureButton());
-    hint("화면을 캡처해 증거를 남기세요");
     await tap("capture");
     sfx.shutter();
     layer(R.flash() + R.shotThumb());
-    hint("캡처한 사진을 눌러 보내세요");
     await tap("thumb");
     layer();
     show(R.shareSheet(clock));
-    hint("누구에게 먼저 보낼까요?");
     while ((await tap("to-mom", "to-other")) === "to-other") toast("먼저 보호자에게 보내 보세요. 선생님께는 엄마와 같이 말씀드릴 수 있어요.");
     const lines = [{ who: "me", text: R.shotBubble() }, { who: "me", text: `엄마 이거 나 아니야. 누가 내 목소리를 AI로 만들어서 올렸어`, time: `오후 ${clock}` }];
     show(R.momRoom(clock, lines));
@@ -114,7 +107,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
       await wait(700);
     }
     show(R.momRoom(clock, [...lines, ...replies], true));
-    hint("릴스로 돌아가 신고하세요");
     await tap("back");
     show(R.moreAt(clock));
     await tap("report");
@@ -129,7 +121,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
   async function stopTwo(stop) {
     const clock = clockText(stop.at);
     await ask(stop, R.profileEdit(clock));
-    hint("모르는 사람이 당신을 찾을 수 있는 말을 누르세요");
     let misses = 0;
     while ((await tap("bio-school", "bio-hobby")) === "bio-hobby") {
       misses += 1;
@@ -137,7 +128,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
       toast("취미만으로는 당신을 찾기 어려워요. 다른 말을 찾아보세요.");
     }
     show(R.profileEdit(clock, { school: false, blinkDone: true }));
-    hint("완료를 누르세요");
     await tap("done");
     await shatter(stop);
   }
@@ -147,7 +137,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     show(R.vlogUpload(clock));
     const picked = [];
     layer(R.dialog({ ...stop, picked, button: "공개 범위 바꾸기" }));
-    hint("알 수 있는 것을 모두 누르세요");
     while (picked.length < stop.chips.length) {
       const index = Number((await tap(...stop.chips.map((_, chip) => `chip-${chip}`))).slice(5));
       if (!picked.includes(index)) picked.push(index);
@@ -156,7 +145,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     await tap("go");
     layer();
     show(R.privacyAt(clock, "toggle"));
-    hint("비공개 계정을 켜세요");
     await tap("toggle");
     show(R.privacyAt(clock, "sheet"));
     await tap("private");
@@ -168,7 +156,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
   async function stopFour(stop) {
     const st = { clock: clockText(stop.at), checked: VOICE_APP.consents.map(() => true), tappable: true, blinkItem: null, agreeBlink: false };
     await ask(stop, consentScreen(st));
-    hint("꼭 필요하지 않은 동의를 끄세요");
     for (;;) {
       const key = await tap("agree", "all", ...VOICE_APP.consents.map((_, index) => `c-${index}`));
       if (key === "all") {
@@ -189,7 +176,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
       }
       st.agreeBlink = !st.checked[3];
       show(consentScreen(st));
-      if (!st.checked[3]) hint("동의하고 시작하기를 누르세요");
     }
     show(doneScreen({ clock: st.clock, name: ME, song: Math.max(0, VOICE_APP.songs.indexOf(SONG)), shared: false }));
     await wait(2400);
@@ -204,7 +190,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     const render = () => show(lock({ lockNotifs: list, clock: clockText(NEW_NIGHT) }));
     layer();
     render();
-    hint("다시 맞은 그날 밤");
     await wait(1600);
     for (const item of [...remaining, ...WARM.map(([app, title, body]) => ({ app, title, body, warm: true }))]) {
       list.forEach((entry) => (entry.fresh = false));
@@ -250,7 +235,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     const flipped = [];
     ov.innerHTML = "";
     side.time.innerHTML = "<b>엔딩</b>";
-    hint("카드를 눌러 보세요");
     show(R.ending(items, flipped, false));
     sfx.chime();
     bgm.play("ending");
@@ -273,7 +257,7 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
       if (!flipped.includes(index)) flipped.push(index);
       show(R.ending(items, flipped, flipped.length === items.length));
       const cards = scr.querySelector(".e-cards");
-      if (flipped.length === items.length) { hint(""); cards?.scrollIntoView?.({ block: "nearest" }); }
+      if (flipped.length === items.length) cards?.scrollIntoView?.({ block: "nearest" });
     }
   }
 

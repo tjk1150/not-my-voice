@@ -1,4 +1,4 @@
-/* Run shell: only the phone, with one bar above it (hint on the left, sound icon on the right).
+/* Run shell: only the phone, with one bar above it holding the sound icon at the right.
    Layouts come from js/run/layout.js: stack keeps the bezel, full fills a phone's screen. */
 .run-wrap { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; }
 .phone.run { position: relative; border-radius: 44px; box-shadow: 0 0 0 10px #111, 0 20px 50px rgba(0, 0, 0, .25); flex: none; }
@@ -6,15 +6,13 @@
 .phone.run .ov { pointer-events: none; z-index: 90; }
 .phone.run .ov > * { pointer-events: auto; }
 .run-side { order: -1; width: var(--phone-w); height: 44px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #30343b; }
-.run-side .r-hint { flex: 1; min-width: 0; font-size: 14px; line-height: 18px; font-weight: 700; color: var(--blue); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.run-side .r-sound { flex: none; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: #fff; box-shadow: inset 0 0 0 1.5px #c9ccd3; cursor: pointer; }
+.run-side .r-sound { flex: none; margin-left: auto; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: #fff; box-shadow: inset 0 0 0 1.5px #c9ccd3; cursor: pointer; }
 .run-side .r-stats { display: none; flex: none; gap: 10px; font-variant-numeric: tabular-nums; }
 .run-wrap[data-debug] .run-side .r-stats { display: flex; }
 .run-side .r-count b { color: #d0021b; }
 .run-wrap[data-layout="full"] { gap: 0; padding: 0; background: #000; overflow: hidden; }
 .run-wrap[data-layout="full"] .phone.run { border-radius: 0; box-shadow: none; }
 .run-wrap[data-layout="full"] .run-side { padding: 0 12px; color: #fff; }
-.run-wrap[data-layout="full"] .r-hint { color: #a9b3ff; }
 .run-wrap[data-layout="full"] .r-sound { background: rgba(255, 255, 255, .14); box-shadow: none; color: #fff; }
 
 .startcard { position: absolute; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(0, 0, 0, .72); color: #fff; text-align: center; border-radius: inherit; }
