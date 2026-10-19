@@ -10,7 +10,7 @@ import { bgm } from "./bgm.js";
 import { lock } from "./views.js";
 import { wait, easeInOut, dayText, timeText, clockText, shareFile, saveFile, copyText } from "../utils.js";
 import { SHARE } from "../data.js";
-import { REMAINING } from "./rewind-data.js";
+import { REMAINING, LESSON_BUTTON } from "./rewind-data.js";
 import { drawShareCard } from "./share-card.js";
 
 
@@ -80,7 +80,9 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
       await wait(140);
     }
     await wait(600);
-    layer(R.lesson(stop.lesson, from, count));
+    // After the last stop the clock runs forward to the night, so the button says so.
+    const last = stop === STOPS[STOPS.length - 1];
+    layer(R.lesson(stop.lesson, from, count, last ? LESSON_BUTTON.forward : LESSON_BUTTON.back));
     sfx.chime();
     await tap("go");
   }

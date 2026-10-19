@@ -68,6 +68,9 @@ export const REMAINING = [
   { who: "AI 표시", why: "AI로 만들었다는 표시가 없어 진짜처럼 보였어요", req: "⑩ 투명성" },
 ];
 
+// The lesson card's button: back to an earlier stop, or (after the last stop) forward to the night itself.
+export const LESSON_BUTTON = { back: "계속 되감기", forward: "그날 밤으로 돌아가기" };
+
 export const CHANGED = "알리기, 학교와 반 지우기, 공개 범위, 선택 동의";
 
 export const HELP = [

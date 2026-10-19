@@ -5,7 +5,7 @@ import { face } from "../faces.js";
 import { card } from "../ios-screens.js";
 import { msg } from "../talk-screens.js";
 import { reels, moreSheet, reportReasons, reportDone, privacy } from "../feed-screens.js";
-import { REMAINING, CHANGED, HELP } from "./rewind-data.js";
+import { REMAINING, CHANGED, HELP, LESSON_BUTTON } from "./rewind-data.js";
 import { PICK_PROMPT } from "../data.js";
 
 // The vlog frame (generated-images/ai-ethics/vlog-sticker.png, resized).
@@ -23,9 +23,9 @@ export function dialog({ when, ask, chips = null, picked = [], after = "", butto
     ${after && done ? `<p class="rw-after pop">${after}</p>` : ""}${done ? `<button class="blink" data-r="go">${button}</button>` : ""}</div>`;
 }
 
-export function lesson({ title, text, tags }, from, to) {
+export function lesson({ title, text, tags }, from, to, button = LESSON_BUTTON.back) {
   return `<div class="rw-dim"></div><div class="rw-card lesson pop"><span class="rw-drop">알림 ${from} → <b>${to}</b></span><h3>${title}</h3><p>${text}</p>
-    <div class="rw-tags">${tags.map((tag) => `<span>${tag}</span>`).join("")}</div><button class="blink" data-r="go">계속 되감기</button></div>`;
+    <div class="rw-tags">${tags.map((tag) => `<span>${tag}</span>`).join("")}</div><button class="blink" data-r="go">${button}</button></div>`;
 }
 
 export const pile = (cards) =>
