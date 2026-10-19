@@ -216,7 +216,7 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     const picked = await tap("close", ...REMAINING.map((_, index) => `pick-${index}`));
     if (picked === "close") { ov.innerHTML = ""; return; }
     ov.innerHTML = R.cardSheet(null);
-    const file = await drawShareCard({ pick: REMAINING[Number(picked.slice(5))], url });
+    const file = await drawShareCard({ pick: REMAINING[Number(picked.slice(5))], options: REMAINING.map((item) => item.who), url });
     const src = URL.createObjectURL(file);
     ov.innerHTML = R.cardSheet(src);
     icons();

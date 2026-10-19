@@ -121,15 +121,25 @@ export const SHARE = {
   text: "AI가 만든 내 목소리 하나로 하룻밤에 알림 47개. 너라면 어디서 막을 수 있을까?",
 };
 
-// The story-sized share card (text only; the player's pick is filled in, never their name).
+// The story-sized share card: the frozen notification pile on top, a story-style poll of the remaining
+// five below with the player's pick marked. Never the player's name or the fake clip.
 export const SHARE_CARD = {
-  kicker: "AI 윤리 체험",
-  title: "내가 하지 않은 말",
+  kicker: "AI 윤리 체험 · 내가 하지 않은 말",
   lines: ["AI가 만든 내 목소리 하나로", "하룻밤에 알림 47개"],
-  ask: ["남은 알림 5개 중", "가장 먼저 바뀌어야 할 것"],
+  poll: "남은 5개 중 가장 먼저 바뀌어야 할 것은?",
   mine: "내 선택",
   question: "너라면 뭘 고를래?",
   cta: "직접 겪어 보기",
+  // [app, title, body] for the pile, back card first; none of them carries the player's name.
+  pile: [
+    ["feed", "메시지 요청", "너가 그 ○○중 2-3 걔임?"],
+    ["voice", "보이스팝", "회원님의 AI 목소리로 만든 영상이 34개가 되었어요"],
+    ["feed", "민재", "릴스를 보냈습니다 · 너네 반 걔 맞지?"],
+    ["feed", "수아", "나한테 왜 그랬어?"],
+    ["feed", "2-3 우리반", "지민: 이거 너야?"],
+    ["talk", "엄마", "이게 무슨 일이니. 전화 받아"],
+    ["talk", "담임 선생님", "학교폭력 신고가 들어왔다."],
+  ],
 };
 export const PICK_PROMPT = { title: "남은 5개 중 가장 먼저 바뀌어야 할 것은?", sub: "고른 답이 공유 카드에 들어가요. 이름은 들어가지 않아요." };
 
