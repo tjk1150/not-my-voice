@@ -29,7 +29,7 @@ export const MONOLOGUE_MS = 2800;
 
 // Run layout (CSS px). The phone keeps its 393 x 852 point grid and is scaled with CSS zoom.
 export const PHONE_SIZE = { width: 393, height: 852 };
-export const RUN_LAYOUT = { bezel: 10, pad: 24, barGap: 12, bar: 44, fullMaxWidth: 540, maxZoom: 1.15 };
+export const RUN_LAYOUT = { bezel: 10, pad: 24, fullMaxWidth: 540, maxZoom: 1.15 };
 
 // The design gallery (?s=, ?play, the overview) opens only on these hosts; elsewhere the page plays.
 export const DESIGN_HOSTS = ["localhost", "127.0.0.1"];
