@@ -24,6 +24,12 @@ html:has(.run-wrap), body:has(.run-wrap) { overscroll-behavior: none; }
 .run-wrap[data-layout="full"] .r-sound svg { width: 17px; height: 17px; }
 .run-wrap[data-layout="full"] .r-stats { position: absolute; top: 38px; left: 0; white-space: nowrap; }
 
+/* A phone held sideways: cover everything and ask to turn it back (see SIDEWAYS_QUERY). */
+.rotate-note { display: none; position: fixed; inset: 0; z-index: 500; background: #000; color: #fff; flex-direction: column; align-items: center; justify-content: center; gap: 14px; font-size: 17px; font-weight: 600; }
+.rotate-note svg { animation: tiltBack 1.6s ease-in-out infinite; }
+@keyframes tiltBack { 0%, 30% { transform: rotate(90deg); } 70%, 100% { transform: rotate(0deg); } }
+@media (orientation: landscape) and (max-height: 500px) and (pointer: coarse) { .rotate-note { display: flex; } }
+
 .startcard { position: absolute; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(0, 0, 0, .72); color: #fff; text-align: center; border-radius: inherit; }
 .startcard p { font-size: 15px; opacity: .7; } .startcard h1 { font-size: 34px; margin: 4px 0 14px; }
 .startcard span { font-size: 15px; line-height: 23px; opacity: .85; }

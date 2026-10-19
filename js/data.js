@@ -112,6 +112,8 @@ export const MONOLOGUE = [
 ];
 export const REWIND_PROMPT = ["", "이 밤은 어디서부터<br>시작됐을까?"];
 
+export const ROTATE_NOTE = "휴대폰을 세로로 돌려 주세요";
+
 // What the ending's share button sends. No name and nothing personal: only the question and the link.
 export const SHARE = {
   title: "내가 하지 않은 말",

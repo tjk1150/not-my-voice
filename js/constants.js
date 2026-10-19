@@ -34,6 +34,8 @@ export const RUN_LAYOUT = { bezel: 10, pad: 24, fullMaxWidth: 540, maxZoom: 1.15
 // The design gallery (?s=, ?play, the overview) opens only on these hosts; elsewhere the page plays.
 export const DESIGN_HOSTS = ["localhost", "127.0.0.1"];
 export const LAYOUT_CHECK_MS = 500;
+// A phone held sideways (tablets are taller than this): the run asks to turn it back and pauses.
+export const SIDEWAYS_QUERY = "(orientation: landscape) and (max-height: 500px) and (pointer: coarse)";
 
 // Share card canvas (Instagram story size) and its colours.
 export const CARD_SIZE = { width: 1080, height: 1920 };

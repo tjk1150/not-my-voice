@@ -12,8 +12,8 @@ import { setPlayer } from "../data.js";
 import * as V from "./views.js";
 import { ic } from "../icons.js";
 import { card } from "../ios-screens.js";
-import { TAP_TO_VIEW, BANNER_ROOMS, TALK_ORDER, FREEZE_HOLD_MS, MONOLOGUE_MS } from "../constants.js";
-import { MONOLOGUE, REWIND_PROMPT } from "../data.js";
+import { TAP_TO_VIEW, BANNER_ROOMS, TALK_ORDER, FREEZE_HOLD_MS, MONOLOGUE_MS, SIDEWAYS_QUERY } from "../constants.js";
+import { MONOLOGUE, REWIND_PROMPT, ROTATE_NOTE } from "../data.js";
 import { monoCard } from "../intro-screens.js";
 import { bindLayout } from "./layout.js";
 
@@ -48,7 +48,10 @@ export function start(root, params) {
     <div class="phone run"><div class="scr"></div><div class="ov"></div>
       ${skipPrologue ? `<div class="startcard"><div><p>1단계</p><h1>그날 밤</h1><span>밤 11시. 영상 소리(미디어 볼륨)는 꺼 두었어요.<br>깜빡이는 곳을 눌러 확인해 보세요.</span><button data-start>시작</button></div></div>` : ""}</div>
     <aside class="run-side"><span class="r-stats"><span class="r-time"><b>0:00</b> / 3:00</span><span class="r-count">알림 <b>0</b> / 47</span></span>
-      <button class="r-sound" data-sound aria-label="소리 끄기" title="소리 끄기">${ic("volume-2", 20, 2)}</button></aside>`;
+      <button class="r-sound" data-sound aria-label="소리 끄기" title="소리 끄기">${ic("volume-2", 20, 2)}</button></aside>
+    <div class="rotate-note">${ic("smartphone", 44, 1.6)}<p>${ROTATE_NOTE}</p></div>`;
+  // The clock stops while a phone is held sideways (the notice above covers the screen).
+  const sideways = window.matchMedia(SIDEWAYS_QUERY);
   // Time and notification count are for checking the run (?debug); students see only the phone.
   if (params.has("debug")) root.dataset.debug = "";
   const phone = root.querySelector(".phone");
@@ -393,7 +396,7 @@ export function start(root, params) {
 
   setInterval(() => {
     const now = performance.now();
-    if (running && !state.storm.frozen) step(Math.min(0.5, ((now - last) / 1000) * speed));
+    if (running && !state.storm.frozen && !sideways.matches) step(Math.min(0.5, ((now - last) / 1000) * speed));
     last = now;
   }, 100);
 
