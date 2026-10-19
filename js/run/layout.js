@@ -27,6 +27,7 @@ export function bindLayout(root, phone) {
     const { mode, zoom } = layoutFor(window.innerWidth, window.innerHeight);
     root.dataset.layout = mode;
     phone.style.zoom = String(zoom);
+    root.style.setProperty("--z", String(zoom));
   };
   // The window size can settle after load (mobile browsers, rotation, toolbars) without a
   // "resize" event, so a cheap size check also runs on a timer.

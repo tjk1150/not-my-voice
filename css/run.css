@@ -12,6 +12,12 @@
 .run-side .r-count b { color: #d0021b; }
 .run-wrap[data-layout="full"] { padding: 0; background: #000; overflow: hidden; }
 .run-wrap[data-layout="full"] .phone.run { border-radius: 0; box-shadow: none; }
+/* On a phone there is no margin, so the icon sits in the status bar's empty gap between the time
+   (x 33-87 pt) and the camera (centre 196.5 pt): centre x 110.5, y 29.5. Banners slide over it. */
+.run-wrap[data-layout="full"] .run-side { z-index: 80; top: calc(50% - 396.5px * var(--z) - 15px); left: calc(50% - 86px * var(--z) - 15px); right: auto; }
+.run-wrap[data-layout="full"] .r-sound { width: 30px; height: 30px; }
+.run-wrap[data-layout="full"] .r-sound svg { width: 17px; height: 17px; }
+.run-wrap[data-layout="full"] .r-stats { position: absolute; top: 38px; left: 0; white-space: nowrap; }
 
 .startcard { position: absolute; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(0, 0, 0, .72); color: #fff; text-align: center; border-radius: inherit; }
 .startcard p { font-size: 15px; opacity: .7; } .startcard h1 { font-size: 34px; margin: 4px 0 14px; }
