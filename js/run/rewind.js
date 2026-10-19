@@ -8,10 +8,8 @@ import { PHASE1_END, NEW_NIGHT, STOPS, WARM } from "./rewind-data.js";
 import * as R from "./rewind-views.js";
 import { bgm } from "./bgm.js";
 import { lock } from "./views.js";
-import { wait, easeInOut, dayText, timeText, clockText, shareFile, saveFile, copyText } from "../utils.js";
-import { SHARE } from "../data.js";
+import { wait, easeInOut, dayText, timeText, clockText } from "../utils.js";
 import { REMAINING, LESSON_BUTTON } from "./rewind-data.js";
-import { drawShareCard } from "./share-card.js";
 
 
 export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
@@ -208,33 +206,6 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     await tap("go");
   }
 
-  // Pick one of the remaining five, draw the story card with that pick, then send, save or copy.
-  async function shareFlow() {
-    const url = `${location.origin}${location.pathname}?run`;
-    ov.innerHTML = R.pickSheet();
-    icons();
-    const picked = await tap("close", ...REMAINING.map((_, index) => `pick-${index}`));
-    if (picked === "close") { ov.innerHTML = ""; return; }
-    ov.innerHTML = R.cardSheet(null);
-    const file = await drawShareCard({ pick: REMAINING[Number(picked.slice(5))], options: REMAINING.map((item) => item.who), url });
-    const src = URL.createObjectURL(file);
-    ov.innerHTML = R.cardSheet(src);
-    icons();
-    for (;;) {
-      const key = await tap("send", "save", "copy", "close");
-      if (key === "close") break;
-      if (key === "save") { saveFile(file); toast("이미지를 저장했어요. 인스타그램 스토리에 올려 보세요."); }
-      if (key === "copy") toast((await copyText(`${SHARE.text} ${url}`)) ? "링크를 복사했어요." : "이 기기에서는 복사할 수 없어요.");
-      if (key === "send") {
-        const result = await shareFile({ file, ...SHARE, url });
-        if (result === "shared") break;
-        if (result === "saved") toast("이 기기는 바로 공유할 수 없어 이미지를 저장했어요.");
-      }
-    }
-    URL.revokeObjectURL(src);
-    ov.innerHTML = "";
-  }
-
   async function endingScreen() {
     const items = notifs.filter((item) => item.tag === "R");
     const flipped = [];
@@ -244,11 +215,7 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     sfx.chime();
     bgm.play("ending");
     for (;;) {
-      const key = await tap(...items.map((_, index) => `card-${index}`), "help", "restart", "share");
-      if (key === "share") {
-        await shareFlow();
-        continue;
-      }
+      const key = await tap(...items.map((_, index) => `card-${index}`), "help", "restart");
       // Always back to the very start (name input), whatever entry point was used.
       if (key === "restart") { location.href = `${location.pathname}?run`; return; }
       if (key === "help") {

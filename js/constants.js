@@ -37,11 +37,4 @@ export const LAYOUT_CHECK_MS = 500;
 // A phone held sideways (tablets are taller than this): the run asks to turn it back and pauses.
 export const SIDEWAYS_QUERY = "(orientation: landscape) and (max-height: 500px) and (pointer: coarse)";
 
-// Share card canvas (Instagram story size) and its colours.
-export const CARD_SIZE = { width: 1080, height: 1920 };
-export const CARD_COLORS = { bg: "#0b0c10", bgTop: "#1b1638", text: "#ffffff", dim: "#a3a8b4", accent: "#5b6cff", alert: "#ff453a", poll: "#ffffff", pollInk: "#111318", option: "#eef0f4" };
-// App tile colours on the share card's notifications.
-export const CARD_APPS = { feed: ["#f58529", "#dd2a7b", "#8134af"], talk: ["#fee500"], voice: ["#7b5cff", "#ff5ca8"], phone: ["#34c759"] };
-export const CARD_FONT = "Pretendard, -apple-system, 'Apple SD Gothic Neo', sans-serif";
-
 export const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];

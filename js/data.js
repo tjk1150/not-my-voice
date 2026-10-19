@@ -115,29 +115,8 @@ export const REWIND_PROMPT = ["", "어떻게 이런 일이<br>일어난 걸까?"
 
 export const ROTATE_NOTE = "휴대폰을 세로로 돌려 주세요";
 
-// What the ending's share button sends. No name and nothing personal: only the question and the link.
-export const SHARE = {
-  title: "내가 하지 않은 말",
-  text: "AI가 만든 내 목소리 하나로 하룻밤에 알림 47개. 너라면 어디서 막을 수 있을까?",
-};
-
-// The story-sized share card, kept to four parts: title, the frozen pile under "알림 47", a story-style
-// poll of the remaining five with the player's pick marked, and the question with the link.
-// Never the player's name or the fake clip.
-export const SHARE_CARD = {
-  title: "내가 하지 않은 말",
-  sub: "AI가 만든 내 목소리 하나로 생긴 하룻밤",
-  poll: "남은 5개 중 가장 먼저 바뀌어야 할 것은?",
-  mine: "내 선택",
-  question: "너라면 뭘 고를래?",
-  // [app, title, body], back card first; none of them carries the player's name.
-  pile: [
-    ["feed", "2-3 우리반", "지민: 이거 너야?"],
-    ["talk", "엄마", "이게 무슨 일이니. 전화 받아"],
-    ["talk", "담임 선생님", "학교폭력 신고가 들어왔다."],
-  ],
-};
-export const PICK_PROMPT = { title: "남은 5개 중 가장 먼저 바뀌어야 할 것은?", sub: "고른 답이 공유 카드에 들어가요. 이름은 들어가지 않아요." };
+// The ending's survey button opens this Google Form in a new tab. The button stays hidden while url is empty.
+export const SURVEY = { url: "", label: "설문 참여하기" };
 
 // Prologue, two weeks earlier: an AI cover-song app. The player taps "전체 동의", which also turns on
 // the optional "share my AI voice" consent. Stop 4 of phase 2 returns to this screen.

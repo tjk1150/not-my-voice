@@ -6,7 +6,7 @@ import { card } from "../ios-screens.js";
 import { msg } from "../talk-screens.js";
 import { reels, moreSheet, reportReasons, reportDone, privacy } from "../feed-screens.js";
 import { REMAINING, CHANGED, HELP, LESSON_BUTTON } from "./rewind-data.js";
-import { PICK_PROMPT } from "../data.js";
+import { SURVEY } from "../data.js";
 
 // The vlog frame (generated-images/ai-ethics/vlog-sticker.png, resized).
 export const VLOG_IMG = "img/vlog.jpg";
@@ -123,7 +123,7 @@ export function ending(items, flipped, showQuestion) {
     ${showQuestion
       ? `<div class="e-q pop"><b>남은 알림 5개. 이건 누구의 몫일까요?</b><span>조심은 피해를 줄이는 방법이에요. 피해의 책임이 당신에게 있다는 뜻은 아니에요.</span></div>
          <button class="e-help-btn pop" data-r="help">${ic("life-buoy", 18, 2)} 도움받을 수 있는 곳 ${ic("chevron-right", 18, 2)}</button>
-         <div class="e-btns pop"><button class="line" data-r="restart">처음부터 다시 하기</button><button class="main" data-r="share">${ic("share", 18, 2.2)} 공유하기</button></div>`
+         <div class="e-btns pop"><button class="line" data-r="restart">처음부터 다시 하기</button>${SURVEY.url ? `<a class="main" href="${SURVEY.url}" target="_blank" rel="noopener">${ic("clipboard-list", 18, 2.2)} ${SURVEY.label}</a>` : ""}</div>`
       : ""}
   </div>`;
 }
@@ -131,16 +131,3 @@ export function ending(items, flipped, showQuestion) {
 export const helpSheet = () => `<div class="rw-dim" data-r="close"></div><div class="sheet e-help pop"><div class="grab"></div><h3>도움받을 수 있는 곳</h3>
   ${HELP.map(([icon, name, text]) => `<div class="e-h">${ic(icon, 22, 2)}<div><b>${name}</b><span>${text}</span></div></div>`).join("")}
   <button data-r="close">닫기</button></div>`;
-
-
-// Share step 1: pick which of the remaining five should change first.
-export const pickSheet = () => `<div class="rw-dim" data-r="close"></div><div class="sheet e-help e-pick pop"><div class="grab"></div>
-  <h3>${PICK_PROMPT.title}</h3><p class="e-pick-sub">${PICK_PROMPT.sub}</p>
-  ${REMAINING.map((item, index) => `<div class="e-pick-row" data-r="pick-${index}"><div><b>${item.who}</b><span>${item.why}</span></div><em>${item.req}</em></div>`).join("")}
-  </div>`;
-
-// Share step 2: the card preview and how to send it.
-export const cardSheet = (src) => `<div class="rw-dim" data-r="close"></div><div class="sheet e-card-sheet pop"><div class="grab"></div>
-  ${src ? `<img class="e-card-img" src="${src}" alt="공유 카드">` : '<div class="e-card-img loading">카드를 만드는 중이에요</div>'}
-  <div class="e-btns"><button class="main" data-r="send">${ic("share", 18, 2.2)} 공유하기</button>
-    <div class="e-pair"><button class="line" data-r="save">${ic("download", 18, 2)} 이미지 저장</button><button class="line" data-r="copy">${ic("link", 18, 2)} 링크 복사</button></div></div></div>`;
