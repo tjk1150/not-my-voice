@@ -27,7 +27,7 @@ export function lock(state) {
 
 export const home = (state) => homeStatic("", state.badges, state.clock) + `<span class="home-hit" data-go="home"></span>`;
 
-const REEL_THUMB = "img/fake-clip-b.jpg";
+const REEL_THUMB = "img/fake-clip-a.jpg";
 
 // Newest first, like the app: as the reel keeps arriving, rows with the same thumbnail pile up on top.
 function inboxRows(state) {
@@ -151,7 +151,7 @@ export const report = (state) => reportReasons().replace(/<div class="li ([^"]*)
 export const reportDoneView = (state) => reportDone().replace('<div class="btn-main" style="top:748px">', '<div class="btn-main" style="top:748px" data-go="done">').replace('<span class="r gbtn glass">', '<span class="r gbtn glass" data-go="done">').replace("11:06", state.clock);
 
 export function activity(state) {
-  const thumbs = { post: "img/vlog.jpg", reel: "img/fake-clip-b.jpg" };
+  const thumbs = { post: "img/vlog.jpg", reel: "img/fake-clip-a.jpg" };
   const rows = state.activity
     .map(([who, text, thumb = "reel"], index) => `<div class="act-row ${index === 0 && state.activityFresh ? "pop" : ""}">${face(who, 44)}<div class="t"><b>${who}</b>${text} <span class="ago">방금</span></div><span class="thumb" style="background:url(${thumbs[thumb]}) center 30%/cover"></span></div>`)
     .join("");

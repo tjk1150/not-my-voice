@@ -271,7 +271,7 @@ function privacySheet() {
 }
 
 export function activity() {
-  const thumbs = { post: "img/vlog.jpg", reel: "img/fake-clip-b.jpg" };
+  const thumbs = { post: "img/vlog.jpg", reel: "img/fake-clip-a.jpg" };
   const row = (who, text, ago, thumb = "reel") => `<div class="act-row">${face(who, 44)}
     <div class="t"><b>${who}</b>${text} <span class="ago">${ago}</span></div>
     <span class="thumb" style="background:url(${thumbs[thumb]}) center 30%/cover"></span></div>`;

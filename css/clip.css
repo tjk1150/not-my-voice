@@ -2,18 +2,15 @@
 .clip { position: absolute; inset: 0; overflow: hidden; background: #111; }
 .clip-in { position: absolute; top: 0; bottom: 0; left: 50%; aspect-ratio: 941 / 1672; transform: translateX(-50%); container-type: size; animation: shake 2.6s ease-in-out infinite; }
 .clip-in img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.clip-in .fb { animation: mouth .9s steps(1) infinite; }
 .clip .mute { position: absolute; left: 12px; bottom: 206px; width: 26px; height: 26px; border-radius: 50%; background: rgba(0, 0, 0, .55); color: #fff; display: grid; place-items: center; }
 .reelcard .clip .mute { left: auto; right: 8px; bottom: 8px; width: 20px; height: 20px; }
 .autocap { position: absolute; left: 20px; right: 20px; top: 58%; text-align: center; color: #fff; font-size: 21px; font-weight: 800; line-height: 28px; -webkit-text-stroke: 4px #000; paint-order: stroke fill; }
 .reelcard .autocap { font-size: 10px; line-height: 13px; -webkit-text-stroke: 2.2px #000; left: 4px; right: 4px; top: 62%; }
-@keyframes mouth { 0% { opacity: 0; } 50% { opacity: 1; } }
 @keyframes shake {
   0%, 100% { transform: translateX(-50%) translate(0, 0) rotate(0); }
   25% { transform: translateX(-50%) translate(-1.5px, 1px) rotate(-.3deg); }
   50% { transform: translateX(-50%) translate(1px, -1px) rotate(.2deg); }
   75% { transform: translateX(-50%) translate(.5px, 1.5px) rotate(-.15deg); }
 }
-.no-motion .clip-in, .no-motion .clip-in .fb { animation: none; }
-.no-motion .clip-in .fb { opacity: 0; }
+.no-motion .clip-in { animation: none; }
 
