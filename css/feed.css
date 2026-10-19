@@ -1,0 +1,158 @@
+/* 피드 (Instagram-like). Numbers in comments are pt measured on 1179x2556 captures. */
+
+/* DM inbox header: title glyphs 74.7-97, compose icon 344-366 at y 73-95 */
+.f-head { position: absolute; top: 54px; left: 0; right: 0; height: 58px; display: flex; align-items: center; justify-content: center; }
+.f-head .title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; display: flex; align-items: center; gap: 4px; margin-top: 0; }
+.f-head .title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); margin-left: 2px; }
+.f-head .act { position: absolute; right: 27px; top: 18px; }
+
+/* DM rows: pitch 72, avatar 56 at x 16, text at x 84.7, name/sub both 15 with 20 line boxes */
+.dm-list { position: absolute; top: 112px; left: 0; right: 0; }
+.dm-row { height: 72px; display: flex; align-items: center; padding: 0 16px; gap: 12.7px; }
+.dm-row .txt { flex: 1; min-width: 0; line-height: 20px; }
+.dm-row .name { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 4px; }
+.dm-row .sub { font-size: 15px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dm-row.unread .name, .dm-row.unread .sub { font-weight: 600; color: var(--ink); }
+.dm-row .udot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); flex: none; margin-right: 6px; }
+/* Story ring: 2.3 gradient + 2.3 white gap around 56 -> outer 66 */
+.ring { padding: 2.3px; border-radius: 50%; background: conic-gradient(from 200deg, #fea932, #f02b7a, #c13ad8, #f02b7a, #fea932); margin: -5px; flex: none; }
+.ring > .av { border: 2.3px solid #fff; box-sizing: content-box; }
+.ring.seen { background: #dde1e6; padding: 1px; margin: -3.6px; }
+
+/* Floating tab bar: 21-371 x 770-830, selected capsule 71x50 */
+.tabbar { position: absolute; left: 21px; right: 22px; top: 770px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: space-around; padding: 0 5px; z-index: 40; }
+.tabbar .tab { width: 68px; height: 50px; border-radius: 25px; display: grid; place-items: center; position: relative; }
+.tabbar .tab.on { background: rgba(12, 16, 20, 0.1); }
+.tabbar .tab .pdot { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--red); right: 18px; bottom: 11px; }
+.tabbar.dark .tab.on { background: rgba(255, 255, 255, 0.16); }
+.tabbar.dark { color: #fff; }
+
+/* Chat room header: 44 glass circles centred y 87; avatar 40 at x 68; name 16 bold, handle 13 */
+.r-head { position: absolute; top: 65px; left: 16px; right: 13px; height: 44px; display: flex; align-items: center; z-index: 30; }
+.r-head .who { display: flex; align-items: center; gap: 7px; margin-left: 8px; flex: 1; min-width: 0; }
+.r-head .who .nm { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 3px; line-height: 20px; }
+.r-head .who .hd { font-size: 13px; line-height: 16px; }
+.r-head .calls { display: flex; gap: 11.6px; }
+.fade-top { position: absolute; top: 0; left: 0; right: 0; height: 150px; background: linear-gradient(#fff 62%, rgba(255, 255, 255, 0)); backdrop-filter: blur(6px); -webkit-mask: linear-gradient(#000 70%, transparent); z-index: 20; }
+
+/* Messages: bubbles 16/21 text, pad 9.5x14, min-height 40, radius 20; grouped gap 2 */
+.msgs { position: absolute; left: 0; right: 0; bottom: 92px; display: flex; flex-direction: column; padding: 0 8px 0 16px; }
+.m { display: flex; align-items: flex-end; gap: 12px; margin-top: 2px; }
+.m.me { justify-content: flex-end; }
+.m .spacer { width: 28px; flex: none; }
+.m .col { display: flex; flex-direction: column; align-items: flex-start; max-width: 262px; }
+.m.me .col { align-items: flex-end; }
+.m .who { font-size: 12px; color: var(--ink-2); margin: 10px 0 3px 14px; }
+.bub { font-size: 16px; line-height: 21px; padding: 9.5px 14px; border-radius: 20px; background: var(--fill); word-break: keep-all; overflow-wrap: anywhere; }
+.m.me .bub { color: #fff; background: linear-gradient(180deg, #7b3bea, #6343f1 60%, #5a4ef3); }
+.m.grp-top .bub { border-bottom-left-radius: 6px; }
+.m.grp-mid .bub { border-top-left-radius: 6px; border-bottom-left-radius: 6px; }
+.m.grp-end .bub { border-top-left-radius: 6px; }
+.sys { text-align: center; font-size: 13px; color: var(--ink-2); margin: 14px 0 6px; line-height: 17px; }
+.day { text-align: center; font-size: 13px; color: var(--ink-2); margin: 16px 0 8px; }
+
+/* Shared reel card: 160 x 284, radius 16 */
+.reelcard { width: 160px; height: 284px; border-radius: 16px; position: relative; overflow: hidden; background: #2a2a30; color: #fff; }
+.reelcard .by { z-index: 2; position: absolute; top: 12px; left: 12px; right: 12px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; line-height: 17px; text-shadow: 0 1px 2px rgba(0, 0, 0, .3); }
+.reelcard .play { z-index: 2; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.reelcard > .tag { z-index: 2; position: absolute; left: 12px; bottom: 12px; }
+.reelcard .cap { position: absolute; left: 0; right: 0; bottom: 34px; text-align: center; font-size: 12px; font-weight: 600; padding: 0 10px; }
+
+/* Composer: capsule 8-385 x 766-810, camera 37 at x 11, icons 22 at 226/262/302/341 */
+.composer { position: absolute; left: 8px; right: 8px; top: 766px; height: 44px; border-radius: 22px; background: #f2f3f5; display: flex; align-items: center; padding: 0 20px 0 3px; z-index: 30; }
+.composer .cam { width: 37px; height: 37px; border-radius: 50%; background: #5454f0; display: grid; place-items: center; color: #fff; flex: none; }
+.composer .ph { flex: 1; color: var(--ink-2); font-size: 16px; margin-left: 10px; }
+.composer .tools { display: flex; gap: 17px; }
+
+/* Reels: action column centred x 353, pitch ~73; author row y 661-703; caption y 724; progress y 753 */
+.reel { position: absolute; inset: 0; background: #1b1c20; color: #fff; }
+.reel .shade { position: absolute; left: 0; right: 0; bottom: 0; height: 330px; background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .55)); }
+.reel .top { position: absolute; top: 66px; left: 0; right: 0; height: 36px; display: flex; align-items: center; }
+.reel .top .plus { position: absolute; left: 13px; }
+.reel .top .tabs { position: absolute; left: 111px; display: flex; gap: 16px; font-size: 20px; font-weight: 700; }
+.reel .top .tabs .off { opacity: .6; }
+.reel .acts { position: absolute; right: 18px; width: 40px; top: 344px; display: flex; flex-direction: column; align-items: center; gap: 23px; }
+.reel .acts .a { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; }
+.reel .author { position: absolute; left: 8px; top: 661px; display: flex; align-items: center; gap: 10px; }
+.reel .author .nm { font-size: 15px; font-weight: 700; line-height: 19px; }
+.reel .author .sub { font-size: 13px; opacity: .75; line-height: 17px; }
+.reel .follow { border: 1px solid rgba(255, 255, 255, .55); border-radius: 9px; padding: 4px 11px; font-size: 14px; font-weight: 600; margin-left: 4px; }
+.reel .caption { position: absolute; left: 8px; right: 70px; top: 714px; font-size: 15px; line-height: 20px; }
+.reel .prog { position: absolute; left: 8px; right: 26px; top: 752px; height: 2px; background: rgba(255, 255, 255, .35); }
+.reel .prog i { position: absolute; left: 0; top: 0; bottom: 0; width: 38%; background: #fff; }
+.reel .subtitle { position: absolute; top: 103px; left: 30px; right: 30px; background: #fff; color: #111; border-radius: 10px; font-size: 22px; font-weight: 700; text-align: center; padding: 10px 8px; }
+
+/* Bottom sheet: top 337, radius 32, groups f0f2f5 radius 20 at x 16-377, rows 53 */
+.dim { position: absolute; inset: 0; background: rgba(0, 0, 0, .55); z-index: 60; }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: #fff; color: var(--ink); border-radius: 32px 32px 0 0; z-index: 61; padding: 0 16px 34px; }
+.sheet .grab { width: 34px; height: 3px; border-radius: 2px; background: var(--ink-2); margin: 15px auto 26px; }
+.sheet .grp { background: var(--fill); border-radius: 20px; overflow: hidden; margin-bottom: 10px; }
+.sheet .row { height: 53px; display: flex; align-items: center; gap: 16px; padding: 0 20px; font-size: 16px; }
+.sheet .row + .row { border-top: 1px solid #e3e6eb; }
+.sheet .grp.plain .row + .row { border-top: 0; }
+.sheet .row.red { color: #ed1c24; }
+.sheet h3 { font-size: 22px; font-weight: 700; text-align: center; margin: -6px 0 18px; }
+
+/* Full-page flows (report, privacy): nav title 16 bold at y 80, close glass 44 at right */
+.nav { position: absolute; top: 59px; left: 0; right: 0; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
+.nav .l { position: absolute; left: 16px; }
+.nav .r { position: absolute; right: 16px; }
+.page { position: absolute; top: 127px; left: 0; right: 0; bottom: 0; }
+.page h2 { font-size: 20px; font-weight: 700; text-align: center; line-height: 26px; }
+.page .lead { font-size: 14px; color: var(--ink-2); text-align: center; line-height: 17px; margin: 8px 34px 0; }
+.list .li { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; font-size: 16px; }
+.list .li .ico { display: flex; align-items: center; gap: 12px; }
+.btn-main { position: absolute; left: 16px; right: 16px; height: 42px; border-radius: 12px; background: var(--blue); color: #fff; display: grid; place-items: center; font-size: 15px; font-weight: 600; }
+.okcircle { width: 74px; height: 74px; border-radius: 50%; background: var(--fill); display: grid; place-items: center; margin: 0 auto 20px; }
+
+/* Privacy: row label 16 at y 141, toggle 63 x 28 */
+.toggle { width: 63px; height: 28px; border-radius: 14px; background: #e3e5e8; position: relative; flex: none; }
+.toggle::after { content: ""; position: absolute; top: 2px; left: 2px; width: 38px; height: 24px; border-radius: 12px; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .2); transition: left .2s; }
+.toggle.on { background: var(--ink); }
+.toggle.on::after { left: 23px; }
+.para { font-size: 13.4px; color: var(--ink-2); line-height: 14.6px; padding: 0 16px; margin-top: 18px; }
+.para a { color: var(--link); text-decoration: none; }
+
+/* Activity (hearts) list */
+.act-sec { font-size: 16px; font-weight: 700; padding: 14px 16px 8px; }
+.act-row { display: flex; align-items: center; gap: 12px; padding: 8px 16px; font-size: 14px; line-height: 18px; }
+.act-row .t { flex: 1; min-width: 0; }
+.act-row .t b { font-weight: 600; }
+.act-row .t .ago { color: var(--ink-2); }
+.act-row .thumb { width: 44px; height: 44px; border-radius: 6px; background: #3a3f48; flex: none; }
+.btn-sm { height: 32px; padding: 0 16px; border-radius: 8px; background: var(--blue); color: #fff; font-size: 14px; font-weight: 600; display: grid; place-items: center; flex: none; }
+
+/* Reel comments sheet: sorted by likes, list scrolls under a fixed title */
+.cm-sheet { top: 250px; padding: 0; display: flex; flex-direction: column; }
+.cm-sheet .grab { margin: 12px auto 10px; }
+.cm-sheet h4 { text-align: center; font-size: 16px; font-weight: 700; padding-bottom: 12px; border-bottom: 1px solid #eceef1; }
+.cm-x { position: absolute; right: 14px; top: 26px; color: var(--ink-2); cursor: pointer; }
+.cm-list { flex: 1; overflow-y: auto; padding: 6px 0 10px; }
+.cm { display: flex; gap: 12px; padding: 9px 16px; font-size: 14px; line-height: 19px; }
+.cm .t { flex: 1; min-width: 0; }
+.cm .t b { font-weight: 600; font-size: 13px; }
+.cm .ago, .cm .re { color: var(--ink-2); font-size: 12px; }
+.cm .re { display: block; margin-top: 3px; font-weight: 600; }
+.cm .lk { display: flex; flex-direction: column; align-items: center; color: var(--ink-2); font-size: 11px; padding-top: 4px; }
+.cm .lk em { font-style: normal; }
+.cm-reply { padding-left: 44px; }
+.cm-input { height: 64px; border-top: 1px solid #eceef1; display: flex; align-items: center; gap: 12px; padding: 0 16px 14px; color: var(--ink-2); font-size: 14px; }
+
+/* Reel audio link and the audio page (voice reused for memes) */
+.reel .audio-link { cursor: pointer; }
+.au-head { position: absolute; top: 118px; left: 16px; right: 16px; display: flex; gap: 16px; align-items: center; }
+.au-cover { width: 104px; height: 104px; border-radius: 12px; flex: none; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #7c3aed, #14b8a6); }
+.au-head b { display: block; font-size: 18px; line-height: 24px; }
+.au-head span { display: block; font-size: 14px; color: var(--ink-2); margin-top: 4px; }
+.au-head em { font-style: normal; font-weight: 700; color: var(--ink); }
+.au-head .au-save { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; padding: 6px 12px; border-radius: 8px; background: var(--fill); color: var(--ink); font-weight: 600; }
+.au-grid { position: absolute; top: 240px; left: 0; right: 0; bottom: 96px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; overflow: hidden; }
+.au-tile { position: relative; aspect-ratio: 9 / 16; background: url(../img/fake-clip-a.jpg) center var(--pos) / cover; filter: hue-rotate(var(--hue)) saturate(1.3); }
+.au-tile .cap { position: absolute; left: 6px; right: 6px; top: 38%; text-align: center; color: #fff; font-size: 12px; font-weight: 800; line-height: 15px; -webkit-text-stroke: 2.4px #000; paint-order: stroke fill; filter: hue-rotate(calc(var(--hue) * -1)); }
+.au-tile .views { position: absolute; left: 6px; bottom: 6px; display: flex; align-items: center; gap: 3px; color: #fff; font-size: 12px; font-weight: 600; text-shadow: 0 1px 2px rgba(0, 0, 0, .6); }
+.au-use { top: 772px; display: flex; gap: 6px; align-items: center; justify-content: center; }
+
+/* Class room composer: prefilled denial, or closed after being removed */
+.composer.typed .txt { flex: 1; margin-left: 10px; font-size: 15px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.composer.typed .sendb { width: 34px; height: 34px; border-radius: 50%; background: var(--blue); color: #fff; display: grid; place-items: center; flex: none; margin-right: -14px; cursor: pointer; }
+.composer.closed { justify-content: center; padding: 0 16px; font-size: 14px; color: var(--ink-2); }

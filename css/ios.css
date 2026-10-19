@@ -1,0 +1,45 @@
+/* iOS system surfaces drawn from scratch. pt measured on lock/home captures (iPhone 16). */
+
+.wall { position: absolute; inset: 0; background:
+  radial-gradient(90% 50% at 70% 85%, rgba(120, 70, 160, .55), transparent 70%),
+  radial-gradient(80% 45% at 20% 30%, rgba(40, 80, 160, .6), transparent 70%),
+  linear-gradient(180deg, #0b1630 0%, #161a3a 55%, #241a3a 100%); }
+
+/* Lock: date centre y 92 (22 semibold), clock glyphs 115-200 (fluid, ~112) */
+.lock .date { position: absolute; top: 78px; left: 0; right: 0; text-align: center; color: rgba(255, 255, 255, .9); font-size: 22px; font-weight: 600; }
+.lock .clock { position: absolute; top: 100px; left: 0; right: 0; text-align: center; color: rgba(255, 255, 255, .92); font-size: 112px; font-weight: 800; letter-spacing: -0.03em; line-height: 116px; font-family: "SF Pro Rounded", var(--font); }
+.lock .carrier { position: absolute; top: 20px; left: 33px; color: #fff; font-size: 16px; font-weight: 600; z-index: 51; }
+.lock .qbtn { position: absolute; top: 748px; width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: rgba(255, 255, 255, .16); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+
+/* Notification card: x 15-379, h 65, radius 26, icon 38 at x 28.5 */
+.notifs { position: absolute; left: 15px; right: 14px; bottom: 120px; display: flex; flex-direction: column; gap: 8px; }
+.ncard { position: relative; min-height: 65px; border-radius: 26px; padding: 11px 16px 11px 13.5px; display: flex; gap: 12px; align-items: center; color: #fff;
+  background: rgba(60, 60, 75, .5); backdrop-filter: blur(24px) saturate(1.5); -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  box-shadow: inset 0 0 0 0.6px rgba(255, 255, 255, .22); }
+.ncard.light { background: rgba(245, 245, 248, .82); color: #111; box-shadow: 0 8px 30px rgba(0, 0, 0, .18), inset 0 0 0 .6px rgba(255, 255, 255, .5); }
+.ncard .ico { flex: none; width: 38px; height: 38px; }
+.ncard .ico svg { width: 38px; height: 38px; }
+.ncard .body { flex: 1; min-width: 0; font-size: 15px; line-height: 19px; }
+.ncard .body b { font-weight: 600; display: block; }
+.ncard .body span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ncard .when { position: absolute; top: 11px; right: 16px; font-size: 13px; opacity: .6; }
+.ncard .body b { padding-right: 40px; }
+
+/* In-app banner: drops from the island */
+.banner { position: absolute; top: 10px; left: 8px; right: 8px; z-index: 70; }
+
+/* Home grid: icon 64, column pitch 91, row pitch 99, first row centre y 112; dock icons 64 */
+.home .grid { position: absolute; top: 72px; left: 10px; right: 10px; display: grid; grid-template-columns: repeat(4, 91px); row-gap: 21px; justify-content: center; }
+.home .app { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #fff; font-size: 12px; font-weight: 500; text-shadow: 0 1px 2px rgba(0, 0, 0, .25); position: relative; }
+.home .app .badge { position: absolute; top: -6px; right: 6px; min-width: 24px; height: 24px; border-radius: 12px; padding: 0 7px; background: #ff3b30; color: #fff; font-size: 14px; font-weight: 600; display: grid; place-items: center; text-shadow: none; }
+.fill-app { width: 64px; height: 64px; border-radius: 14.3px; display: grid; place-items: center; color: #fff; }
+.home .dots { position: absolute; top: 732px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; }
+.home .dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, .45); }
+.home .dots i:first-child { background: #fff; }
+.home .dock { position: absolute; left: 12px; right: 12px; top: 764px; height: 82px; border-radius: 34px; display: flex; justify-content: space-around; align-items: center; padding: 0 12px;
+  background: rgba(255, 255, 255, .18); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); box-shadow: inset 0 0 0 .6px rgba(255, 255, 255, .25); }
+
+/* Storm: cards tilted and piled (vaccine: 18 cards in ~4 s; ours 20 in 5 s) */
+.storm .ncard { position: absolute; left: 15px; right: 14px; }
+.freeze { position: absolute; inset: 0; background: rgba(255, 255, 255, .06); z-index: 80; display: grid; place-items: center; }
+.freeze .count { background: #fff; color: #d0021b; border-radius: 22px; padding: 14px 26px; font-size: 30px; font-weight: 800; box-shadow: 0 10px 40px rgba(0, 0, 0, .4); }

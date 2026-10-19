@@ -1,0 +1,69 @@
+/* 톡 (KakaoTalk-like), dark theme as captured at night. pt measured on 1179x2556 captures. */
+.talk { --k-bg: #080808; --k-fill: #282828; --k-fill-2: #2e2e2e; --k-ink: #f2f2f2; --k-ink-2: #a6a6a6; --k-ink-3: #6d6d6d; --k-yellow: #fde400; --k-badge: #f4551f; }
+
+/* List header: "채팅" 26 bold at x 16, centre y 87; icons 26 centred at 279/320/361 */
+.k-head { position: absolute; top: 66px; left: 16px; right: 16px; height: 42px; display: flex; align-items: center; justify-content: space-between; }
+.k-head h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+.k-head .icons { display: flex; gap: 15px; }
+
+/* Chips: y 117.5-154 */
+.k-chips { position: absolute; top: 117px; left: 16px; display: flex; gap: 7px; }
+.k-chip { height: 37px; padding: 0 16px; border-radius: 19px; background: var(--k-fill); color: #c9c9c9; font-size: 16px; display: flex; align-items: center; gap: 4px; }
+.k-chip.on { background: var(--k-ink); color: #111; font-weight: 700; }
+.k-chip .n { background: var(--k-badge); color: #fff; font-size: 12px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
+
+/* Rows: avatar 48 squircle at x 16, name at x 76.6, pitch 66 for one-line previews */
+.k-list { position: absolute; top: 170px; left: 0; right: 0; }
+.k-row { display: flex; gap: 12.6px; padding: 9px 16px; min-height: 66px; align-items: flex-start; }
+.k-row .av { margin-top: 0; }
+.k-row .txt { flex: 1; min-width: 0; padding-top: 2px; }
+.k-row .nm { font-size: 17px; font-weight: 600; line-height: 22px; display: flex; gap: 5px; align-items: center; }
+.k-row .nm .cnt { color: var(--k-ink-2); font-weight: 400; }
+.k-row .pv { font-size: 15px; color: var(--k-ink-2); line-height: 20px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 3px; }
+.k-row .meta { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; padding-top: 4px; flex: none; }
+.k-row .tm { font-size: 13px; color: var(--k-ink-2); }
+.k-badge { min-width: 19px; height: 19px; border-radius: 10px; padding: 0 5.5px; background: var(--k-badge); color: #fff; font-size: 12.5px; font-weight: 700; display: grid; place-items: center; }
+
+/* Bottom tabs: icons 28 at x 48/122/196/270/345, y 800 */
+.k-tabs { position: absolute; left: 0; right: 0; top: 770px; height: 82px; display: flex; justify-content: space-around; padding: 14px 10px 0; background: var(--k-bg); color: #696b6d; }
+.k-tabs .t { position: relative; }
+.k-tabs .t.on { color: var(--k-ink); }
+.k-tabs .t .k-badge { position: absolute; left: 16px; top: -9px; height: 18px; font-size: 11.5px; }
+
+/* Room header: back pill 16-100 x 60-102, title 17 bold centre y 81, right pill 290-377 */
+.k-rhead { position: absolute; top: 60px; left: 16px; right: 16px; height: 42px; display: flex; align-items: center; justify-content: space-between; z-index: 30; }
+.k-rhead .pill { height: 42px; border-radius: 21px; display: flex; align-items: center; gap: 4px; padding: 0 14px 0 10px; font-size: 18px; }
+.k-rhead .ttl { position: absolute; left: 0; right: 0; text-align: center; font-size: 18px; font-weight: 700; pointer-events: none; }
+.k-rhead .ttl .cnt { color: var(--k-ink-2); font-weight: 600; }
+.k-rhead .pill.r { gap: 18px; padding: 0 14px; }
+
+/* Warning band (not-a-friend) and notice bar: 10.6-382 x 113-166 */
+.k-band { position: absolute; top: 113px; left: 10.6px; right: 10.6px; border-radius: 16px; background: var(--k-fill-2); padding: 10px 14px; display: flex; gap: 10px; align-items: center; font-size: 14.5px; line-height: 19px; z-index: 25; }
+.k-band .acts { display: flex; gap: 8px; margin-top: 8px; }
+.k-band .acts span { flex: 1; height: 34px; border-radius: 10px; background: #3a3a3a; display: grid; place-items: center; font-size: 14px; font-weight: 600; }
+.k-band .acts span.warn { color: #ff6b5b; }
+
+/* Messages: their avatar 34 squircle at x 10, name 13 at x 51, bubble at x 52; mine right 10 */
+.k-msgs { position: absolute; left: 0; right: 0; bottom: 92px; display: flex; flex-direction: column; gap: 6px; padding: 0 10px; }
+.k-m { display: flex; gap: 8px; align-items: flex-start; }
+.k-m.me { justify-content: flex-end; align-items: flex-end; }
+.k-m .col { display: flex; flex-direction: column; gap: 5px; max-width: 250px; }
+.k-m .who { font-size: 13px; color: #cfcfcf; margin: 2px 0 0 1px; }
+.k-m .line { display: flex; align-items: flex-end; gap: 5px; }
+.k-m.me .line { flex-direction: row-reverse; }
+.k-bub { font-size: 16.5px; font-weight: 500; line-height: 21px; padding: 8px 12px; border-radius: 16px; background: var(--k-fill); word-break: keep-all; overflow-wrap: anywhere; }
+.k-m.me .k-bub { background: var(--k-yellow); color: #111; }
+.k-m .first .k-bub, .k-m.first .k-bub { border-top-left-radius: 4px; }
+.k-m.me.first .k-bub { border-top-left-radius: 16px; border-top-right-radius: 4px; }
+.k-m .stamp { display: flex; flex-direction: column; align-items: flex-start; font-size: 11.5px; color: #9c9c9c; flex: none; line-height: 14px; }
+.k-m.me .stamp { align-items: flex-end; }
+.k-m .stamp .u { color: var(--k-yellow); font-weight: 700; }
+.k-m .spacer { width: 34px; flex: none; }
+.k-date { align-self: center; height: 27px; padding: 0 12px 0 14px; border-radius: 14px; background: #1c1c1c; font-size: 14px; display: flex; align-items: center; gap: 2px; white-space: nowrap; margin: 10px 0; }
+
+/* Input: 10.6-382 x 770-817 */
+.k-input { position: absolute; left: 10.6px; right: 10.6px; top: 770px; height: 47px; border-radius: 24px; background: #151515; border: 1px solid #262626; display: flex; align-items: center; padding: 0 6px 0 12px; gap: 10px; z-index: 30; }
+.k-input .ph { flex: 1; color: var(--k-ink-3); font-size: 16.5px; }
+.k-input .c { width: 34px; height: 34px; border-radius: 50%; background: var(--k-fill-2); display: grid; place-items: center; }
+.screen.talk { background: var(--k-bg); color: var(--k-ink); }
+.talk .home-ind { background: #fff; }

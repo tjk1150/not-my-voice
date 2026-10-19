@@ -1,0 +1,67 @@
+// Phase 1 events, copied from design/ai-ethics-v0-phase1-timetable.md. t = real seconds from 0:00.
+// "to" is where a tap on the notification leads; "room" + "msg" add a line to that room when it fires.
+// "tag" is the cause the notification comes from; phase 2 shatters each tag's notifications.
+import { ME, PEOPLE, STORM } from "../data.js";
+
+const n = (t, tag, app, title, body, extra = {}) => ({ t, tag, type: "notif", app, title, body, ...extra });
+const line = (t, room, who, text) => ({ t, type: "line", room, msg: { who, text } });
+
+export const SCHOOL_NOTICE = () => `<b>[○○중] 학교폭력 사안 접수 안내</b><br>2학년 3반 ${ME} 학생 관련 사안이 접수되었습니다. 10월 20일(화) 오전 8시, 보호자와 함께 교무실로 오시기 바랍니다.`;
+
+// Built after the name is typed, so every line carries the player's name.
+export const buildPhase1 = () => [
+  // Ring 1: the class DM room (#1-8)
+  n(0, "R", "feed", "2-3 우리반", `지민: ${ME} 이거 너야?`, { to: "dm-group" }),
+  n(2, "R", "feed", "2-3 우리반", "지민님이 릴스를 보냈습니다", { to: "dm-group" }),
+  n(5, "S4", "feed", "2-3 우리반", "서연: 수아한테 이게 무슨 말이야?", { to: "dm-group" }),
+  n(8, "S3", "feed", "2-3 우리반", "새 메시지 12개", { to: "dm-group" }),
+  { t: 28, type: "call" },
+  n(40, "S2", "feed", "예린", "너 대전에 태그돼 있던데", { to: "dm:yerin", room: "dm:yerin", msg: { who: "예린", text: "너 대전에 태그돼 있던데" } }),
+  line(41, "dm:yerin", "예린", "진짜 수아한테 그랬어?"),
+  n(47, "S1", "feed", "2-3 우리반", "지민님이 회원님을 다시 추가했습니다", { to: "dm-group", rejoin: true }),
+  n(50, "S1", "feed", "하린", "괜찮아? 이거 진짜 너 아니지? 말 좀 해봐", { to: "dm:harin", room: "dm:harin", msg: { who: "하린", text: "괜찮아?" } }),
+  line(51, "dm:harin", "하린", "이거 진짜 너 아니지?"),
+  line(52, "dm:harin", "하린", "말 좀 해봐"),
+  n(53, "S2", "feed", "피드", `${PEOPLE.daejeon}님이 회원님을 릴스에 태그했습니다`, { to: "reels", act: [PEOPLE.daejeon, "님이 회원님을 릴스에 태그했습니다."] }),
+  // Ring 2: the school's anonymous account, the reel and its reach (#9-19)
+  n(58, "S2", "feed", "피드", "회원님이 태그된 릴스를 23명이 좋아합니다", { to: "activity", act: ["jimin.__", "님 외 22명이 회원님이 태그된 릴스를 좋아합니다."] }),
+  n(62, "R", "feed", "피드", "회원님이 태그된 릴스가 추천에 올랐습니다", { to: "reels" }),
+  n(68, "S3", "feed", "피드", "dream_09님이 회원님의 게시물에 댓글을 남겼습니다: 브이로그 목소리랑 완전 똑같네", { to: "activity", act: ["dream_09", "님이 회원님의 게시물에 댓글을 남겼습니다: 브이로그 목소리랑 완전 똑같네", "post"] }),
+  n(74, "S3", "feed", "피드", "dream_09님 외 2명이 회원님을 팔로우하기 시작했습니다", { to: "activity", follow: 3 }),
+  n(80, "S3", "feed", "피드", "moon.k님이 댓글을 남겼습니다: 스티커로 가려도 후드 보면 딱 앎", { to: "activity", act: ["moon.k", "님이 회원님이 태그된 릴스에 댓글을 남겼습니다: 스티커로 가려도 후드 보면 딱 앎"] }),
+  n(86, "S2", "feed", "피드", "hot_clip님이 회원님을 언급했습니다: 수아 협박한 애 계정 여기임", { to: "activity", act: ["hot_clip", "님이 회원님을 언급했습니다: 수아 협박한 애 계정 여기임"] }),
+  n(92, "S2", "feed", "메시지 요청", "너가 그 ○○중 2-3 걔임?", { to: "dm-inbox", request: "너가 그 ○○중 2-3 걔임?" }),
+  n(98, "S1", "feed", "2-3 우리반", "도윤: 왜 아무 말도 안 함? 진짜인가 보네", { to: "dm-group", room: "dm-group", msg: { who: "도윤", text: "왜 아무 말도 안 함? 진짜인가 보네" }, deniedBody: "도윤: 해명 끝? 증거는 없고?", deniedMsg: { who: "도윤", text: "해명 끝? 증거는 없고?" } }),
+  n(104, "S4", "voice", "보이스팝", "회원님의 AI 목소리가 오늘 12번 사용되었어요", { to: "home" }),
+  n(108, "R", "feed", "피드", "신고하신 릴스는 검토 중입니다", { to: "activity", unreported: "회원님이 태그된 릴스 조회수 1만 회" }),
+  n(112, "S1", "talk", "담임 선생님", `${ME}, 학교폭력 신고가 들어왔다.`, { to: "talk:teacher", room: "talk:teacher", msg: { who: "담임 선생님", text: `${ME}, 학교폭력 신고가 들어왔다.` } }),
+  line(113, "talk:teacher", "담임 선생님", "내일 아침 8시까지 교무실로 와라."),
+  // Ring 3: the adults, the academy and 수아 herself (#20-27)
+  n(118, "S1", "phone", "전화", "엄마 부재중 전화", { to: "home" }),
+  n(123, "S1", "talk", "엄마", "수아 엄마가 학부모 단톡방에 영상을 올렸대", { to: "talk:mom", room: "talk:mom", msg: { who: "엄마", text: "수아 엄마가 학부모 단톡방에 영상을 올렸대" } }),
+  line(124, "talk:mom", "엄마", "이게 무슨 일이니"),
+  line(125, "talk:mom", "엄마", "전화 받아"),
+  n(129, "S2", "talk", "학원 선생님", `${ME}, 학원 아이들 사이에 영상이 돌던데 무슨 일 있니?`, { to: "talk:tutor", room: "talk:tutor", msg: { who: "학원 선생님", text: `${ME}, 학원 아이들 사이에 영상이 돌던데 무슨 일 있니?` } }),
+  n(135, "S4", "feed", "수아", "나한테 왜 그랬어?", { to: "dm:sua", room: "dm:sua", msg: { who: "수아", text: "나한테 왜 그랬어?" } }),
+  line(136, "dm:sua", "수아", "나 내일 학교 못 가겠어"),
+  n(141, "S4", "talk", "채원", "우리 학원 단톡에도 올라왔어", { to: "talk:chaewon", room: "talk:chaewon", msg: { who: "채원", text: "우리 학원 단톡에도 올라왔어" } }),
+  line(142, "talk:chaewon", "채원", "다들 니 목소리 맞대"),
+  n(147, "S2", "feed", "메시지 요청", "프로필에 ○○중 2-3 써 놨네", { to: "dm-inbox", request: "프로필에 ○○중 2-3 써 놨네" }),
+  n(155, "S1", "talk", "엄마", "학교에서 문자 왔어", { to: "talk:mom", room: "talk:mom", msg: { who: "엄마", text: "학교에서 문자 왔어" } }),
+  { t: 156, type: "line", room: "talk:mom", msg: { who: "엄마", text: SCHOOL_NOTICE(), preview: "[○○중] 학교폭력 사안 접수 안내", notice: true } },
+  n(162, "S1", "feed", "2-3 우리반", "지민님이 회원님을 내보냈습니다", { to: "dm-group", kick: true }),
+  { t: 170, type: "storm" },
+  { t: 175, type: "freeze" },
+];
+
+// All 47 counted notifications with their cause, for phase 2: [{ app, title, body, tag }].
+export const allCounted = () => [
+  ...buildPhase1().filter((ev) => ev.type === "notif").map(({ app, title, body, tag }) => ({ app, title, body, tag })),
+  ...STORM.map(([app, title, body, tag]) => ({ app, title, body, tag })),
+];
+
+// Storm cards #28-47 arrive every 0.25 s from 2:50.
+export { STORM };
+
+export const PHASE_LENGTH = 180;
+export const SECONDS_PER_GAME_MINUTE = 15;
