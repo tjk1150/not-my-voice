@@ -117,7 +117,7 @@ export function dmOne() {
     <div class="fade-top"></div>
     <header class="r-head">
       <span class="gbtn glass">${ic("chevron-left", 26, 2)}</span>
-      <span class="who">${face("하린", 40)}<span><span class="nm">하린 ${ic("chevron-right", 16, 2.2)}</span><span class="hd">harin.0412</span></span></span>
+      <span class="who">${face("하린", 40)}<span><span class="nm">하린 ${ic("chevron-right", 16, 2.2)}</span><span class="hd">harin-0412</span></span></span>
       <span class="calls"><span class="gbtn glass">${ic("phone", 24, 1.8)}</span><span class="gbtn glass">${ic("video", 24, 1.8)}</span></span>
     </header>
     <section class="msgs">
@@ -196,7 +196,7 @@ export function moreSheet() {
     `<div class="dim"></div>
     <div class="sheet">
       <div class="grab"></div>
-      <div class="grp plain"><div class="row" style="height:57px">${face("지민", 32, "sq")}<span style="line-height:19px">오리지널 오디오 · jimin.__<br><small style="font-size:12px;color:var(--ink-2)">오디오</small></span></div>${row("bookmark", "저장")}${row("repeat-2", "리믹스 및 시퀀스")}</div>
+      <div class="grp plain"><div class="row" style="height:57px">${face("지민", 32, "sq")}<span style="line-height:19px">오리지널 오디오 · jimin-2-3<br><small style="font-size:12px;color:var(--ink-2)">오디오</small></span></div>${row("bookmark", "저장")}${row("repeat-2", "리믹스 및 시퀀스")}</div>
       <div class="grp">${row("info", "이 게시물이 표시되는 이유")}${row("circle-check", "관심 있음")}${row("circle-x", "관심 없음")}
         <div class="row red blink">${ic("message-square-warning", 24, 2)}<span>신고</span></div></div>
     </div>
@@ -232,7 +232,7 @@ export function reportDone() {
       <h2>신고가 접수되었습니다</h2>
       <p class="lead">검토 중입니다. 검토가 끝나면 알려 드릴게요.</p>
       <div class="act-sec" style="margin-top:62px;font-size:17px">기타 옵션</div>
-      <div class="list">${opt("ban", "jimin.__님 차단")}${opt("circle-slash", "jimin.__님 제한")}${opt("shield-check", "커뮤니티 규정에 대해 더 알아보기")}</div>
+      <div class="list">${opt("ban", "jimin-2-3님 차단")}${opt("circle-slash", "jimin-2-3님 제한")}${opt("shield-check", "커뮤니티 규정에 대해 더 알아보기")}</div>
     </div>
     <div style="position:absolute;left:0;right:0;top:734px;border-top:1px solid #e3e6eb"></div>
     <div class="btn-main" style="top:748px">완료</div>
@@ -280,12 +280,12 @@ export function activity() {
     ${statusBar("11:06")}
     <div class="nav"><span class="l gbtn glass">${ic("chevron-left", 26, 2)}</span>알림</div>
     <div class="page" style="top:112px">
-      <div class="act-row">${face("dream_09", 44)}<div class="t"><b>dream_09</b>님 외 2명이 회원님을 팔로우하기 시작했습니다. <span class="ago">2분</span></div></div>
+      <div class="act-row">${face("dream-09", 44)}<div class="t"><b>dream-09</b>님 외 2명이 회원님을 팔로우하기 시작했습니다. <span class="ago">2분</span></div></div>
       <div class="act-sec">오늘</div>
-      ${row("hot_clip", "님이 회원님을 언급했습니다: 수아 협박한 애 계정 여기임", "1분")}
-      ${row("moon.k", "님이 회원님이 태그된 릴스에 댓글을 남겼습니다: 스티커로 가려도 후드 보면 딱 앎", "1분")}
-      ${row("dream_09", "님이 회원님의 게시물에 댓글을 남겼습니다: 브이로그 목소리랑 완전 똑같네", "2분", "post")}
-      ${row("jimin.__", "님 외 22명이 회원님이 태그된 릴스를 좋아합니다.", "3분")}
+      ${row("hot-clip", "님이 회원님을 언급했습니다: 수아 협박한 애 계정 여기임", "1분")}
+      ${row("moon-k", "님이 회원님이 태그된 릴스에 댓글을 남겼습니다: 스티커로 가려도 후드 보면 딱 앎", "1분")}
+      ${row("dream-09", "님이 회원님의 게시물에 댓글을 남겼습니다: 브이로그 목소리랑 완전 똑같네", "2분", "post")}
+      ${row("jimin-2-3", "님 외 22명이 회원님이 태그된 릴스를 좋아합니다.", "3분")}
       ${row(PEOPLE.daejeon, "님이 회원님을 릴스에 태그했습니다.", "3분")}
     </div>
     ${tabbar("")}

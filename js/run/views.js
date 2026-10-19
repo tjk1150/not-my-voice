@@ -160,7 +160,7 @@ export function activity(state) {
     ${statusBar(state.clock)}
     <div class="nav"><span class="l gbtn glass" data-go="tab-dm">${ic("chevron-left", 26, 2)}</span>알림</div>
     <div class="page" style="top:112px">
-      ${state.flags.follow ? `<div class="act-row">${face("dream_09", 44)}<div class="t"><b>dream_09</b>님 외 ${state.flags.follow - 1}명이 회원님을 팔로우하기 시작했습니다. <span class="ago">방금</span></div></div>` : ""}
+      ${state.flags.follow ? `<div class="act-row">${face("dream-09", 44)}<div class="t"><b>dream-09</b>님 외 ${state.flags.follow - 1}명이 회원님을 팔로우하기 시작했습니다. <span class="ago">방금</span></div></div>` : ""}
       <div class="act-sec">오늘</div>${rows || '<p class="para">아직 알림이 없어요.</p>'}
     </div>
     ${tabbar("home")}${homeInd()}

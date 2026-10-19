@@ -4,7 +4,7 @@ export let ME = "지우";
 
 // Account ids unrelated to the typed name, so they never contradict it (matches the sky profile photo).
 // daejeon: the school's anonymous "대신 전해드립니다" account that posts the fake.
-export const PEOPLE = { meId: "sky_0731", daejeon: "ojung.daejeon" };
+export const PEOPLE = { meId: "sky-0731", daejeon: "ojung-daejeon" };
 
 const PALETTE = ["#8fa6c9", "#c99a8f", "#9fbf9a", "#b9a3d1", "#d4b483", "#86b8b8", "#c98fb0", "#a0a8b5"];
 
@@ -45,17 +45,17 @@ export const LOCK_NOTIFS = [
 // Reel comments in order of arrival: [id, text, likes, reply?]. The sheet sorts by likes, so the one
 // comment that doubts the clip (1 like) sinks to the bottom as popular ones arrive.
 export const REEL_COMMENTS = [
-  ["hot_clip", "○○중 2-3이래", 213],
-  ["dream_09", "실화냐", 98],
-  ["moon.k", "스티커로 가려도 후드 보면 딱 앎", 341],
-  ["user_0291", "말투까지 똑같음", 187],
-  ["lemon.tree", "이거 AI 아님? 목소리만 입힌 거 같은데", 1, ["dream_09", "아닌데? 본인 계정 태그돼 있음"]],
-  ["jimin.__", "수아 불쌍하다", 156],
-  ["sky.blue_", "저장함", 44],
-  ["k.minji", "내일 학교 난리 나겠네", 132],
-  ["o_o.h", "원본 있는 사람", 27],
-  ["user_8812", "옆 학교 애들도 봄", 61],
-  ["hot_clip", "학폭위 열리겠네", 209],
+  ["hot-clip", "○○중 2-3이래", 213],
+  ["dream-09", "실화냐", 98],
+  ["moon-k", "스티커로 가려도 후드 보면 딱 앎", 341],
+  ["user-0291", "말투까지 똑같음", 187],
+  ["lemon-tree", "이거 AI 아님? 목소리만 입힌 거 같은데", 1, ["dream-09", "아닌데? 본인 계정 태그돼 있음"]],
+  ["jimin-2-3", "수아 불쌍하다", 156],
+  ["sky-blue_", "저장함", 44],
+  ["k-minji", "내일 학교 난리 나겠네", 132],
+  ["o-o.h", "원본 있는 사람", 27],
+  ["user-8812", "옆 학교 애들도 봄", 61],
+  ["hot-clip", "학폭위 열리겠네", 209],
 ];
 
 // Storm #28-47: [app, title, body, tag] (tags in design/ai-ethics-v0-phase1-timetable.md).
@@ -67,12 +67,12 @@ export const STORM = [
   ["talk", "담임 선생님", "부모님께도 연락드렸다.", "S1"],
   ["phone", "전화", "엄마 부재중 전화 3통", "S1"],
   ["feed", "메시지 요청", "다른 학교: ○○중 2-3 걔 계정 이거 맞지?", "S2"],
-  ["feed", "피드", "hot_clip님이 릴스를 공유했습니다: ○○중 학폭 가해자 계정", "S2"],
+  ["feed", "피드", "hot-clip님이 릴스를 공유했습니다: ○○중 학폭 가해자 계정", "S2"],
   ["feed", "피드", "메시지 요청 4건", "S2"],
   ["feed", "옆 반", "너 진짜 수아 밟는다고 했어?", "S2"],
   ["feed", "피드", "회원님의 브이로그 조회수 2만 회", "S3"],
   ["feed", "메시지 요청", "낯선 계정: 님 예전 브이로그 다 저장함", "S3"],
-  ["feed", "피드", "dream_09님이 회원님의 브이로그에 댓글을 남겼습니다", "S3"],
+  ["feed", "피드", "dream-09님이 회원님의 브이로그에 댓글을 남겼습니다", "S3"],
   ["feed", "피드", "회원님의 브이로그에 새 댓글 34개", "S3"],
   ["feed", "메시지 요청", "낯선 계정: 교문 보니까 ○○중 맞네", "S3"],
   ["feed", "메시지 요청", "브이로그 원본 있어요?", "S3"],
@@ -84,9 +84,9 @@ export const STORM = [
 
 // Illustrated profile pictures (generated-images/ai-ethics, cropped into img/). The player never sees their own face: "me" is a sky photo.
 export const PHOTOS = {
-  me: "moonk", "지민": "jimin", "jimin.__": "jimin", "서연": "seoyeon", "도윤": "doyun", "현우": "hyunwoo", "하린": "harin",
+  me: "moonk", "지민": "jimin", "jimin-2-3": "jimin", "서연": "seoyeon", "도윤": "doyun", "현우": "hyunwoo", "하린": "harin",
   "예린": "yerin", "수아": "sua", "태윤": "taeyun", "가은": "gaeun", "민서": "minseo", "준호": "junho",
-  hot_clip: "hotclip", "moon.k": "sunset", dream_09: "dream09",
+  "hot-clip": "hotclip", "moon-k": "sunset", "dream-09": "dream09",
   "담임 선생님": "teacher", "엄마": "mom", "학원 선생님": "tutor", "가족": "mom",
 };
 
