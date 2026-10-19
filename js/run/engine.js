@@ -35,7 +35,8 @@ const clockAt = (t) => `11:${String(Math.min(12, Math.floor(t / SECONDS_PER_GAME
 const ampm = (clock) => `오후 ${clock}`;
 
 export function start(root, params) {
-  const speed = Number(params.get("speed")) || 1;
+  // Test parameters are clamped: a typed URL must not run time backwards or hang the tab.
+  const speed = Math.min(10, Math.max(0.25, Number(params.get("speed")) || 1));
   // ?run starts with the prologue; ?run&phase1 (or a ?t= jump) starts at the lock screen; ?run&phase2 at the rewind.
   const skipPrologue = params.has("phase1") || params.has("t") || params.has("phase2");
   let state = initialState();
@@ -438,7 +439,7 @@ export function start(root, params) {
     startRewind();
     return;
   }
-  const jump = Number(params.get("t"));
+  const jump = Math.min(180, Math.max(0, Number(params.get("t")) || 0));
   if (jump > 0) { for (let i = 0; i < jump * 10; i += 1) step(0.1); }
   renderView();
   renderOverlay();
