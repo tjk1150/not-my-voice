@@ -13,6 +13,7 @@
 .dm-row .name { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 4px; }
 .dm-row .sub { font-size: 15px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dm-row.unread .name, .dm-row.unread .sub { font-weight: 600; color: var(--ink); }
+.dm-row .thumb { width: 40px; height: 56px; border-radius: 8px; background: #2a2a30 center 30%/cover; flex: none; }
 .dm-row .udot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); flex: none; margin-right: 6px; }
 /* Story ring: 2.3 gradient + 2.3 white gap around 56 -> outer 66 */
 .ring { padding: 2.3px; border-radius: 50%; background: conic-gradient(from 200deg, #fea932, #f02b7a, #c13ad8, #f02b7a, #fea932); margin: -5px; flex: none; }

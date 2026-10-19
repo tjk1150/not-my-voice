@@ -6,7 +6,7 @@ import { face } from "../faces.js";
 import { tabbar, ringAv, groupAv, bubble, reelCard, reels as reelsStatic, commentsSheet, audioPage, denyComposer, kickedComposer, moreSheet, reportReasons, reportDone } from "../feed-screens.js";
 import { sq, stranger, msg } from "../talk-screens.js";
 import { card, home as homeStatic } from "../ios-screens.js";
-import { ROOMS, OLD_DMS, CALLERS } from "./rooms.js";
+import { ROOMS, OLD_DMS, CALLERS, SHARE_ROOMS } from "./rooms.js";
 
 const homeInd = (light = false) => `<i class="home-ind ${light ? "light" : ""}"></i><span class="home-hit" data-go="home"></span>`;
 
@@ -27,18 +27,24 @@ export function lock(state) {
 
 export const home = (state) => homeStatic("", state.badges, state.clock) + `<span class="home-hit" data-go="home"></span>`;
 
+const REEL_THUMB = "img/fake-clip-b.jpg";
+
+// Newest first, like the app: as the reel keeps arriving, rows with the same thumbnail pile up on top.
 function inboxRows(state) {
   const rows = [];
   const group = state.rooms["dm-group"];
   const groupLast = [...group.lines].reverse().find((line) => line.text || line.sys);
-  rows.push({ id: "dm-group", name: "2-3 우리반", sub: groupLast ? (groupLast.sys || `${groupLast.who}: ${groupLast.text}`) + " · 방금" : `지민: ${ME} 이거 너야? · 방금`, unread: state.unread["dm-group"] > 0, group: true });
-  for (const id of ["dm:sua", "dm:harin", "dm:yerin"]) {
+  rows.push({ id: "dm-group", name: "2-3 우리반", sub: groupLast ? (groupLast.sys || `${groupLast.who}: ${groupLast.text}`) + " · 방금" : `지민: ${ME} 이거 너야? · 방금`, unread: state.unread["dm-group"] > 0, group: true, at: group.updated });
+  for (const id of ["dm:sua", "dm:harin", "dm:yerin", ...SHARE_ROOMS]) {
     const room = state.rooms[id];
     const last = room.lines[room.lines.length - 1];
-    if (state.unread[id] > 0 || room.fresh) rows.push({ id, name: ROOMS[id].name, sub: `${last.text} · 방금`, unread: state.unread[id] > 0, ring: id === "dm:harin" });
+    const reel = room.lines.some((line) => line.reel);
+    if (state.unread[id] > 0 || room.fresh) rows.push({ id, name: ROOMS[id].name, sub: `${last.text} · 방금`, unread: state.unread[id] > 0, ring: id === "dm:harin", reel, at: room.updated });
   }
   const requests = state.flags.requests;
-  if (requests.length) rows.push({ id: "request", name: `메시지 요청 ${requests.length}개`, sub: requests[requests.length - 1], unread: true, request: true });
+  const lastRequest = requests[requests.length - 1];
+  if (lastRequest) rows.push({ id: "request", name: `메시지 요청 ${requests.length}개`, sub: `${lastRequest.who}: ${lastRequest.text}`, unread: true, request: true, reel: lastRequest.reel, at: lastRequest.at });
+  rows.sort((a, b) => b.at - a.at);
   // 수아 sits among the old threads until her message arrives: two days ago they planned lunch together.
   const old = state.rooms["dm:sua"].fresh ? [] : [{ id: "", name: "수아", sub: "월요일에 같이 매점 가자 · 2일" }];
   return rows.concat(old, OLD_DMS.map(([name, sub]) => ({ id: "", name, sub })));
@@ -54,7 +60,7 @@ export function dmInbox(state) {
       .map(
         (row) => `<div class="dm-row ${row.unread ? "unread" : ""}" ${row.id ? `data-go="room-${row.id}"` : ""}>
           ${row.group ? groupAv() : row.request ? avatar(56, ic("user-round", 30, 2), "#c7ccd4") : row.ring ? ringAv(row.name, 56) : face(row.name, 56)}
-          <div class="txt"><div class="name">${row.name}</div><div class="sub">${row.sub}</div></div>${row.unread ? '<i class="udot"></i>' : ""}</div>`
+          <div class="txt"><div class="name">${row.name}</div><div class="sub">${row.sub}</div></div>${row.reel ? `<span class="thumb" style="background-image:url(${REEL_THUMB})"></span>` : ""}${row.unread ? '<i class="udot"></i>' : ""}</div>`
       )
       .join("")}</section>
     ${tabbar("dm")}${homeInd()}
@@ -72,7 +78,7 @@ function feedLines(lines, group, pop) {
       const first = !prev || prev.who !== line.who || prev.sys || prev.day;
       const last = !next || next.who !== line.who || next.sys || next.day;
       const pos = first && last ? "" : first ? "grp-top" : last ? "grp-end" : "grp-mid";
-      const html = line.reel ? reelCard() : "";
+      const html = line.reel ? reelCard().replace('<div class="reelcard">', '<div class="reelcard" data-go="reel-open">') : "";
       return `<div class="line${cls}">${bubble(line.who, line.text || "", { group, first, last, pos, html })}</div>`;
     })
     .join("");
@@ -115,8 +121,10 @@ export const audio = (state) => audioPage(Math.min(34, 12 + Math.max(0, Math.flo
 
 const compact = (value) => (value >= 10000 ? `${(value / 10000).toFixed(1).replace(".0", "")}만` : value.toLocaleString("ko-KR"));
 
+// A reel opened from a DM gets a back arrow where the reels tab has its "+".
 export function reels(state) {
-  return reelsStatic()
+  const back = state.reelFrom ? (html) => html.replace(/<span class="plus">[\s\S]*?<\/span>/, `<span class="plus" data-go="close-reel">${ic("chevron-left", 30, 2.2)}</span>`) : (html) => html;
+  return back(reelsStatic())
     .replace("1.2만", compact(state.reel.likes))
     .replace("1,904", compact(state.reel.shares))
     .replace('<span class="a blink"', '<span class="a"')

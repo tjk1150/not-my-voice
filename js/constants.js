@@ -11,7 +11,9 @@ export const REEL_GO = { "message-circle": "comments", ellipsis: "more" };
 
 // Phase 1 runtime: what a tap opens, which banners lead the player, the order of 톡 rooms.
 export const TAP_TO_VIEW = { "app-feed": "dm-inbox", "app-talk": "talk-list", "tab-dm": "dm-inbox", "tab-reels": "reels", "tab-home": "activity", comments: "comments", "close-comments": "reels", audio: "audio", "close-audio": "reels", more: "more", "close-sheet": "reels", "report-go": "report", "close-report": "reels", home: "home" };
-export const BANNER_ROOMS = ["dm:harin", "dm:sua", "talk:teacher"];
+// Banners that lead the player into the next room. Until that room is opened they stay up, so the
+// way from 피드 to 톡 is always a banner and never the home screen.
+export const BANNER_ROOMS = ["dm:harin", "dm:minjae", "dm:sua", "talk:teacher"];
 export const TALK_ORDER = ["talk:teacher", "talk:mom", "talk:tutor", "talk:chaewon"];
 
 // Pause between classmates' lines in the group call.

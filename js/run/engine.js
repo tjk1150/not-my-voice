@@ -1,7 +1,7 @@
 // Phase 1 runtime: real time drives the game clock (15 s = 1 game minute), notifications,
 // room scripts, the bullies' group call and the storm. The player only taps; the next target blinks.
 import { buildPhase1, STORM, SECONDS_PER_GAME_MINUTE } from "./timeline.js";
-import { ROOMS, groupScript, rejoinLines, STAYED_LINES, CALL_LINES, DENY_REPLIES, KICK_LINES } from "./rooms.js";
+import { ROOMS, SHARE_ROOMS, groupScript, rejoinLines, STAYED_LINES, CALL_LINES, DENY_REPLIES, KICK_LINES } from "./rooms.js";
 import { DENY_TEXT } from "../data.js";
 import { runPrologue } from "./prologue.js";
 import { runRewind } from "./rewind.js";
@@ -129,24 +129,28 @@ export function start(root, params) {
     if (state.call.state === "ringing") return "accept";
     if (state.banner && BANNER_ROOMS.includes(state.banner.item.to) && !seen.has(state.banner.item.to)) return "banner";
     if (view === "lock") return "notif-0";
-    if (view === "home") return !seen.has("dm-group") || (!state.reported && t < 112) ? "app-feed" : "app-talk";
+    // Three acts: the class room and the reel (act 1), the reel arriving again and again (act 2),
+    // the adults on 톡 (act 3). Moving between apps is always a banner; home is only a fallback.
+    if (view === "home") return t < 112 ? "app-feed" : "app-talk";
     if (view === "dm-inbox") {
       if (!seen.has("dm-group")) return "room-dm-group";
-      if (unread["dm:sua"]) return "room-dm:sua";
-      if (unread["dm:harin"]) return "room-dm:harin";
-      if (unread["dm:yerin"]) return "room-dm:yerin";
+      for (const id of ["dm:sua", "dm:harin", "dm:yerin"]) if (unread[id]) return `room-${id}`;
+      if (!state.reported && rooms[SHARE_ROOMS[0]].fresh) return `room-${SHARE_ROOMS[0]}`;
       if (unread["dm-group"] && t > 47 && t < 60) return "room-dm-group";
-      return !state.reported ? "tab-reels" : t >= 112 ? "home" : "tab-home";
+      return t >= 112 && !seen.has("talk:teacher") ? "home" : null;
     }
-    if (view === "dm-group") return V.canDeny(state) ? "deny" : groupDone && t >= 38 && t < 47 && !state.left && !state.kicked ? "leave" : groupDone && (t >= 50 || state.kicked) ? "back" : null;
-    if (view.startsWith("dm:")) return "back";
-    if (view === "reels") return !seen.has("comments") ? "comments" : !seen.has("audio") ? "audio" : state.reported ? "tab-home" : "more";
+    if (view === "dm-group") {
+      if (rooms["dm-group"].lines.some((line) => line.reel) && !seen.has("reels")) return "reel-open";
+      return V.canDeny(state) ? "deny" : groupDone && t >= 38 && t < 47 && !state.left && !state.kicked ? "leave" : groupDone && (t >= 50 || state.kicked) ? "back" : null;
+    }
+    if (view.startsWith("dm:")) return SHARE_ROOMS.includes(view) && !state.reported ? "reel-open" : "back";
+    if (view === "reels") return state.reported || t < 53 ? "close-reel" : "more";
     if (view === "audio") return "close-audio";
     if (view === "comments") return V.commentCount(t) >= 9 ? "close-comments" : null;
     if (view === "more") return "report-go";
     if (view === "report") return "reason-fake";
     if (view === "report-done") return "done";
-    if (view === "activity") return t >= 112 ? "home" : null;
+    if (view === "activity") return "tab-dm";
     if (view === "talk-list") {
       const next = TALK_ORDER.find((id) => unread[id]);
       return next ? `room-${next}` : null;
@@ -176,6 +180,9 @@ export function start(root, params) {
     else if (id.startsWith("dm")) sfx.inChat();
   }
 
+  // A banner that leads into the next room stays up until that room is opened (or another replaces it).
+  const bannerUntil = (item) => (BANNER_ROOMS.includes(item.to) && !state.seen.has(item.to) ? Infinity : state.t + 3);
+
   // A second or third message from the same person: the banner (or lock card) shows that message
   // and the alert sounds again, as on a real phone. These follow-ups are not part of the 47.
   function followUp(ev) {
@@ -183,7 +190,7 @@ export function start(root, params) {
     const item = { app: info.app, title: info.name, body: ev.msg.preview || ev.msg.text, to: ev.room, opened: false };
     if (!state.locked && state.view === ev.room) return;
     if (state.locked) state.lockNotifs.unshift({ ...item, fresh: true });
-    else state.banner = { item, until: state.t + 3 };
+    else state.banner = { item, until: bannerUntil(item) };
     vibrate();
     sfx.notify(info.app);
   }
@@ -214,7 +221,7 @@ export function start(root, params) {
     // Like a real phone: the room or screen already open gets neither a banner nor a sound.
     const open = !state.locked && item.to === state.view;
     if (state.locked) state.lockNotifs.unshift({ ...item, fresh: true });
-    else if (!open) state.banner = { item, until: state.t + 3 };
+    else if (!open) state.banner = { item, until: bannerUntil(item) };
     if (open) return;
     vibrate();
     sfx.notify(item.app);
@@ -235,10 +242,11 @@ export function start(root, params) {
       if (state.denied && ev.deniedBody) body = ev.deniedBody;
       const item = { app: ev.app, title: ev.title, body, to: ev.to, opened: false };
       state.notifs.push(item);
-      if (ev.room) pushLine(ev.room, msg);
+      if (ev.share) { pushLine(ev.room, { who: ev.share.who, reel: true }); pushLine(ev.room, { who: ev.share.who, text: ev.share.text }); }
+      else if (ev.room) pushLine(ev.room, msg);
       else if (ev.to === "dm-group" && state.view !== "dm-group") state.unread["dm-group"] = (state.unread["dm-group"] || 0) + 1;
       if (ev.act) { state.activity.unshift(ev.act); state.activityFresh = true; }
-      if (ev.request) state.flags.requests = [...state.flags.requests, ev.request];
+      if (ev.request) state.flags.requests = [...state.flags.requests, { ...ev.request, at: state.t }];
       if (ev.follow) state.flags.follow = ev.follow;
       present(item);
     } else if (ev.type === "line") { pushLine(ev.room, ev.msg); followUp(ev); }
@@ -359,6 +367,9 @@ export function start(root, params) {
     if (key === "leave") { state.left = true; state.rooms["dm-group"].lines.push({ sys: "회원님이 대화방을 나갔습니다" }); return navigate("dm-inbox"); }
     if (key === "reason-fake" || key === "reason-other") { state.reported = true; return navigate("report-done"); }
     if (key === "done") return navigate("reels");
+    // A reel opens from the card in a DM and closes back to that room.
+    if (key === "reel-open" || key === "tab-reels") { state.reelFrom = key === "reel-open" ? state.view : null; return navigate("reels"); }
+    if (key === "close-reel") return navigate(state.reelFrom || "dm-inbox");
     if (key === "accept") {
       const call = { state: "active", start: state.t, beat: 0, elapsed: 0, speaker: null, audio: "playing" };
       call.stop = playCall({ onSpeaker: (who) => { call.speaker = who; renderOverlay(); }, onEnd: (ok) => { call.audio = ok ? "done" : "none"; } });
