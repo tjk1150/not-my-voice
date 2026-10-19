@@ -155,6 +155,7 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
 
   async function stopFour(stop) {
     const st = { clock: clockText(stop.at), checked: VOICE_APP.consents.map(() => true), tappable: true, blinkItem: null, agreeBlink: false };
+    const optionalOn = () => VOICE_APP.consents.flatMap((item, index) => (!item.req && st.checked[index] ? [index] : []));
     await ask(stop, consentScreen(st));
     for (;;) {
       const key = await tap("agree", "all", ...VOICE_APP.consents.map((_, index) => `c-${index}`));
@@ -165,16 +166,18 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
         if (anyOptionalOn) st.blinkItem = null;
         else toast("선택 동의가 다시 모두 켜졌어요.");
       } else if (key === "agree") {
-        if (!st.checked[3]) break;
-        st.blinkItem = 3;
-        toast("아직 켜져 있는 선택 동의가 있어요. 다른 사람이 내 목소리를 쓰게 하는 항목은?");
+        // Every optional consent has to be off: the card asks for all the ones the app does not need.
+        const stillOn = optionalOn();
+        if (!stillOn.length) break;
+        st.blinkItem = stillOn[0];
+        toast(`아직 켜져 있는 선택 동의가 ${stillOn.length}개 있어요. 앱을 쓰는 데 꼭 필요하지 않은 건 모두 꺼 보세요.`);
       } else {
         const index = Number(key.slice(2));
         if (VOICE_APP.consents[index].req) toast("필수 항목은 끌 수 없어요. 앱을 쓰려면 필요해요.");
         else st.checked = st.checked.map((on, item) => (item === index ? !on : on));
-        if (index === 3 && !st.checked[3]) st.blinkItem = null;
+        if (index === st.blinkItem && !st.checked[index]) st.blinkItem = optionalOn()[0] ?? null;
       }
-      st.agreeBlink = !st.checked[3];
+      st.agreeBlink = !optionalOn().length;
       show(consentScreen(st));
     }
     show(doneScreen({ clock: st.clock, name: ME, song: Math.max(0, VOICE_APP.songs.indexOf(SONG)), shared: false }));
