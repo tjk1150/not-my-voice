@@ -20,7 +20,7 @@ export const buildPhase1 = () => [
   n(1, "R", "voice", "보이스팝", "회원님의 AI 목소리로 '말하기' 영상이 만들어졌어요", { to: "" }),
   n(2, "S4", "feed", "2-3 우리반", "서연: 수아한테 이게 무슨 말이야?", { to: "dm-group" }),
   n(3, "S3", "feed", "2-3 우리반", "새 메시지 12개", { to: "dm-group" }),
-  { t: 28, type: "call" },
+  { t: 15, type: "call" },
   n(40, "S2", "feed", "예린", "너 대전에 태그돼 있던데", { to: "dm:yerin", room: "dm:yerin", msg: { who: "예린", text: "너 대전에 태그돼 있던데" } }),
   line(41, "dm:yerin", "예린", "진짜 수아한테 그랬어?"),
   n(47, "S1", "feed", "2-3 우리반", "지민님이 회원님을 다시 추가했습니다", { to: "dm-group", rejoin: true }),
