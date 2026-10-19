@@ -1,13 +1,14 @@
 // Phase 1 events, copied from design/ai-ethics-v0-phase1-timetable.md. t = real seconds from 0:00.
 // "to" is where a tap on the notification leads; "room" + "msg" add a line to that room when it fires.
 // "tag" is the cause the notification comes from; phase 2 shatters each tag's notifications.
-import { ME, STORM } from "../data.js";
+import { ME, PEOPLE, STORM } from "../data.js";
 
 const n = (t, tag, app, title, body, extra = {}) => ({ t, tag, type: "notif", app, title, body, ...extra });
 const line = (t, room, who, text) => ({ t, type: "line", room, msg: { who, text } });
 // Act 2: someone sends me the reel with one line. Known people get a thread, strangers a request.
-const share = (t, tag, room, who, text) => n(t, tag, "feed", who, `릴스를 보냈습니다 · ${text}`, { to: room, room, share: { who, text } });
-const request = (t, tag, who, text, reel = true) => n(t, tag, "feed", "메시지 요청", reel ? `${who}님이 릴스를 보냈습니다: ${text}` : `${who}: ${text}`, { to: "dm:request", request: { who, text, reel } });
+// "extra" fills the heart (activity) tab quietly: tags, likes, comments and follows that come with the spread.
+const share = (t, tag, room, who, text, extra = {}) => n(t, tag, "feed", who, `릴스를 보냈습니다 · ${text}`, { to: room, room, share: { who, text }, ...extra });
+const request = (t, tag, who, text, reel = true, extra = {}) => n(t, tag, "feed", "메시지 요청", reel ? `${who}님이 릴스를 보냈습니다: ${text}` : `${who}: ${text}`, { to: "dm:request", request: { who, text, reel }, ...extra });
 
 export const SCHOOL_NOTICE = () => `<b>[○○중] 학교폭력 사안 접수 안내</b><br>2학년 3반 ${ME} 학생 관련 사안이 접수되었습니다. 10월 20일(화) 오전 8시, 보호자와 함께 교무실로 오시기 바랍니다.`;
 
@@ -27,13 +28,13 @@ export const buildPhase1 = () => [
   line(52, "dm:harin", "하린", "말 좀 해봐"),
   // Act 2, it spreads: the same reel keeps arriving in my DMs, from farther and farther away (#8-15).
   // The player opens the first one, reports the reel, and gets only "검토 중".
-  share(53, "S2", "dm:minjae", "민재", "너네 반 걔 맞지? 대전에 태그돼 있던데"),
-  request(58, "S2", "moon.k", "너가 그 ○○중 2-3 걔임?"),
+  share(53, "S2", "dm:minjae", "민재", "너네 반 걔 맞지? 대전에 태그돼 있던데", { act: [PEOPLE.daejeon, "님이 회원님을 릴스에 태그했습니다."] }),
+  request(58, "S2", "moon.k", "너가 그 ○○중 2-3 걔임?", true, { act: ["jimin.__", "님 외 22명이 회원님이 태그된 릴스를 좋아합니다."] }),
   share(62, "R", "dm:jiwon", "지원", "추천에 떠서 봤어. 이거 너 아니지?"),
-  share(68, "S3", "dm:yuna", "유나", "학원 애들 다 봄. 브이로그 목소리랑 완전 똑같던데"),
-  request(74, "S3", "dream_09", "후드 보니까 딱 너던데ㅋㅋ"),
-  share(80, "S3", "dm:hajun", "하준", "3학년 단톡에도 돌아. 교문 보니까 너네 학교 맞네"),
-  request(86, "S2", "hot_clip", "수아 협박한 애 계정 여기 맞음?ㅋㅋ"),
+  share(68, "S3", "dm:yuna", "유나", "학원 애들 다 봄. 브이로그 목소리랑 완전 똑같던데", { act: ["dream_09", "님이 회원님의 게시물에 댓글을 남겼습니다: 브이로그 목소리랑 완전 똑같네", "post"] }),
+  request(74, "S3", "dream_09", "후드 보니까 딱 너던데ㅋㅋ", true, { follow: 3 }),
+  share(80, "S3", "dm:hajun", "하준", "3학년 단톡에도 돌아. 교문 보니까 너네 학교 맞네", { act: ["moon.k", "님이 회원님이 태그된 릴스에 댓글을 남겼습니다: 스티커로 가려도 후드 보면 딱 앎"] }),
+  request(86, "S2", "hot_clip", "수아 협박한 애 계정 여기 맞음?ㅋㅋ", true, { act: ["hot_clip", "님이 회원님을 언급했습니다: 수아 협박한 애 계정 여기임"] }),
   request(92, "S2", "seojun.b", "다른 학교인데 우리 반 단톡에도 올라옴"),
   n(98, "S1", "feed", "2-3 우리반", "도윤: 왜 아무 말도 안 함? 진짜인가 보네", { to: "dm-group", room: "dm-group", msg: { who: "도윤", text: "왜 아무 말도 안 함? 진짜인가 보네" }, deniedBody: "도윤: 해명 끝? 증거는 없고?", deniedMsg: { who: "도윤", text: "해명 끝? 증거는 없고?" } }),
   // 수아 herself closes act 2, still inside 피드.

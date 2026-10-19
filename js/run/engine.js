@@ -347,6 +347,9 @@ export function start(root, params) {
     renderView();
   }
 
+  // On touch screens a tap allows sound only when it ends (pointerup, touchend), not on pointerdown.
+  for (const type of ["pointerup", "touchend", "click"]) root.addEventListener(type, () => sfx.unlock(), { passive: true });
+
   // pointerdown, not click: the screen re-renders often and a click can land on a replaced node.
   root.addEventListener("pointerdown", (event) => {
     sfx.unlock();
