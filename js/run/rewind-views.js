@@ -69,10 +69,12 @@ export const moreAt = (clock) => moreSheet().replace('<div class="row red blink"
 export const reportAt = (clock) => reportReasons().replace(/<div class="li ([^"]*)"><span>(합성[^<]*)<\/span>/, '<div class="li blink" data-r="fake"><span>$2</span>').replace("11:05", clock);
 export const reportDoneAt = (clock) => reportDone().replace('<div class="btn-main" style="top:748px">', '<div class="btn-main blink" style="top:748px" data-r="done">').replace("11:06", clock);
 
-// Stop 2: the profile editor five days earlier.
+// Stop 2: the profile editor five days earlier. Both bio items blink as editable candidates, so the
+// blink shows what can be changed without giving the answer; after two misses only the school blinks.
 export function profileEdit(clock, { school = true, blinkSchool = false, blinkDone = false } = {}) {
   const field = (label, value) => `<div class="pe-f"><label>${label}</label><div>${value}</div></div>`;
-  const bio = `${school ? `<span class="tok ${blinkSchool ? "blink" : ""}" data-r="bio-school">○○중 2-3</span> · ` : ""}<span class="tok" data-r="bio-hobby">노래 부르는 거 좋아함</span>`;
+  const hobbyBlink = school && !blinkSchool ? "blink" : "";
+  const bio = `${school ? `<span class="tok blink" data-r="bio-school">○○중 2-3</span> · ` : ""}<span class="tok ${hobbyBlink}" data-r="bio-hobby">노래 부르는 거 좋아함</span>`;
   return `
   <div class="screen">
     ${statusBar(clock)}

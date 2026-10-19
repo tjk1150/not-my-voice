@@ -67,7 +67,7 @@
 .pe-f label { display: block; font-size: 12px; color: var(--ink-2); padding-top: 12px; }
 .pe-f > div { font-size: 16px; padding: 6px 0 12px; border-bottom: 1px solid #dfe2e6; min-height: 22px; }
 .pe-f .ph { color: var(--ink-2); }
-.pe-f .tok { cursor: pointer; border-radius: 6px; padding: 2px 3px; margin: -2px -3px; }
+.pe-f .tok { cursor: pointer; border-radius: 6px; padding: 2px 5px; margin: -2px -1px; background: #eef1ff; }
 .pe-pub { margin: 18px 16px 0; font-size: 13px; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
 
 /* Stop 3: vlog share */
