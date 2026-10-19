@@ -162,11 +162,10 @@ export function start(root, params) {
     state.guide = next;
     if (before !== next && (next === "leave" || before === "leave")) return renderView();
     root.querySelectorAll("[data-guided]").forEach((el) => { el.classList.remove("blink"); el.removeAttribute("data-guided"); });
-    if (!next) { root.querySelector(".r-hint").textContent = state.storm.frozen && state.mono > MONOLOGUE.length ? "되감기를 눌러 보세요" : ""; return; }
+    // Phase 1 guides only by the blinking target inside the phone: no text outside it.
+    if (!next) return;
     const target = root.querySelector(`[data-go="${next}"]`);
     if (target) { target.classList.add("blink"); target.setAttribute("data-guided", ""); }
-    const hints = { "notif-0": "잠금 화면의 알림을 눌러 보세요", "app-feed": "피드를 열어 보세요", "app-talk": "톡을 열어 보세요", "room-dm-group": "2-3 우리반 방을 열어 보세요", leave: "방을 나갈 수 있어요", back: "뒤로 가기", "tab-reels": "릴스 탭", comments: "댓글 보기", "close-comments": "댓글 창 닫기", audio: "오디오 보기", "close-audio": "뒤로 가기", deny: "해명 보내기", more: "더보기", "report-go": "신고", "reason-fake": "신고 사유 고르기", done: "완료", "tab-home": "알림 보기", home: "홈으로(아래 막대)", accept: "전화가 왔어요", banner: "알림 배너" };
-    root.querySelector(".r-hint").textContent = hints[next] || (next.startsWith("room-") ? "대화방을 열어 보세요" : "");
   }
 
   // An open 피드 DM room plays a soft in-chat pop for each message from someone else (as the app does);
