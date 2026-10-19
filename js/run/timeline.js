@@ -7,7 +7,7 @@ const n = (t, tag, app, title, body, extra = {}) => ({ t, tag, type: "notif", ap
 const line = (t, room, who, text) => ({ t, type: "line", room, msg: { who, text } });
 // Act 2: someone sends me the reel with one line. Known people get a thread, strangers a request.
 const share = (t, tag, room, who, text) => n(t, tag, "feed", who, `릴스를 보냈습니다 · ${text}`, { to: room, room, share: { who, text } });
-const request = (t, tag, who, text, reel = true) => n(t, tag, "feed", "메시지 요청", reel ? `${who}님이 릴스를 보냈습니다: ${text}` : `${who}: ${text}`, { to: "dm-inbox", request: { who, text, reel } });
+const request = (t, tag, who, text, reel = true) => n(t, tag, "feed", "메시지 요청", reel ? `${who}님이 릴스를 보냈습니다: ${text}` : `${who}: ${text}`, { to: "dm:request", request: { who, text, reel } });
 
 export const SCHOOL_NOTICE = () => `<b>[○○중] 학교폭력 사안 접수 안내</b><br>2학년 3반 ${ME} 학생 관련 사안이 접수되었습니다. 10월 20일(화) 오전 8시, 보호자와 함께 교무실로 오시기 바랍니다.`;
 

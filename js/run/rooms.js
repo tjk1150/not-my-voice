@@ -62,10 +62,14 @@ export const ROOMS = {
   "talk:mom": { app: "talk", name: "엄마", history: [{ day: "2026년 10월 19일 월요일" }, say("엄마", "학원 끝나면 바로 와"), say("me", "응")] },
   "talk:tutor": { app: "talk", name: "학원 선생님", history: [{ day: "2026년 10월 17일 토요일" }, say("학원 선생님", "이번 주 숙제 23쪽까지"), say("me", "넵"), { day: "2026년 10월 19일 월요일" }] },
   "talk:chaewon": { app: "talk", name: "채원", history: [{ day: "2026년 10월 18일 일요일" }, say("채원", "내일 단어 시험 범위 어디야?"), say("me", "3과까지"), { day: "2026년 10월 19일 월요일" }] },
+  // Strangers' messages collect in one request thread, each line under the sender's name.
+  "dm:request": { app: "feed", name: "메시지 요청", sub: "팔로우하지 않는 계정", request: true, history: [] },
 };
 
 // Share threads in arrival order; the first one is where the player opens the reel and reports it.
+// The request thread counts too: each new share, known or not, makes its row blink in the inbox.
 export const SHARE_ROOMS = ["dm:minjae", "dm:jiwon", "dm:yuna", "dm:hajun"];
+export const ARRIVAL_ROOMS = [...SHARE_ROOMS, "dm:request"];
 
 // Old threads in the DM inbox, so the list looks lived in.
 export const OLD_DMS = [

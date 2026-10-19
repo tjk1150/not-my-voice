@@ -1,7 +1,7 @@
 // Phase 1 runtime: real time drives the game clock (15 s = 1 game minute), notifications,
 // room scripts, the bullies' group call and the storm. The player only taps; the next target blinks.
 import { buildPhase1, STORM, SECONDS_PER_GAME_MINUTE } from "./timeline.js";
-import { ROOMS, SHARE_ROOMS, groupScript, rejoinLines, STAYED_LINES, CALL_LINES, DENY_REPLIES, KICK_LINES } from "./rooms.js";
+import { ROOMS, SHARE_ROOMS, ARRIVAL_ROOMS, groupScript, rejoinLines, STAYED_LINES, CALL_LINES, DENY_REPLIES, KICK_LINES } from "./rooms.js";
 import { DENY_TEXT } from "../data.js";
 import { runPrologue } from "./prologue.js";
 import { runRewind } from "./rewind.js";
@@ -137,6 +137,9 @@ export function start(root, params) {
       for (const id of ["dm:sua", "dm:harin", "dm:yerin"]) if (unread[id]) return `room-${id}`;
       if (!state.reported && rooms[SHARE_ROOMS[0]].fresh) return `room-${SHARE_ROOMS[0]}`;
       if (unread["dm-group"] && t > 47 && t < 60) return "room-dm-group";
+      // Each new share makes its row blink: the newest unread one, known person or stranger.
+      const arrival = ARRIVAL_ROOMS.filter((id) => unread[id]).sort((a, b) => rooms[b].updated - rooms[a].updated)[0];
+      if (arrival) return `room-${arrival}`;
       return t >= 112 && !seen.has("talk:teacher") ? "home" : null;
     }
     if (view === "dm-group") {
@@ -246,7 +249,11 @@ export function start(root, params) {
       else if (ev.room) pushLine(ev.room, msg);
       else if (ev.to === "dm-group" && state.view !== "dm-group") state.unread["dm-group"] = (state.unread["dm-group"] || 0) + 1;
       if (ev.act) { state.activity.unshift(ev.act); state.activityFresh = true; }
-      if (ev.request) state.flags.requests = [...state.flags.requests, { ...ev.request, at: state.t }];
+      if (ev.request) {
+        state.flags.requests = [...state.flags.requests, ev.request];
+        if (ev.request.reel) pushLine("dm:request", { who: ev.request.who, reel: true });
+        pushLine("dm:request", { who: ev.request.who, text: ev.request.text });
+      }
       if (ev.follow) state.flags.follow = ev.follow;
       present(item);
     } else if (ev.type === "line") { pushLine(ev.room, ev.msg); followUp(ev); }
@@ -361,7 +368,7 @@ export function start(root, params) {
     const key = el.dataset.go;
     if (key.startsWith("notif-")) return navigate(state.lockNotifs[Number(key.slice(6))]?.to || "home");
     if (key === "banner") { const to = state.banner?.item.to; state.banner = null; renderOverlay(); return navigate(to); }
-    if (key.startsWith("room-")) return key === "room-request" ? null : navigate(key.slice(5));
+    if (key.startsWith("room-")) return navigate(key.slice(5));
     if (key === "back") return navigate(state.view.startsWith("talk:") ? "talk-list" : "dm-inbox");
     if (key === "deny") { state.denied = true; queueGroup([{ who: "me", text: DENY_TEXT }, ...DENY_REPLIES]); return renderView(); }
     if (key === "leave") { state.left = true; state.rooms["dm-group"].lines.push({ sys: "회원님이 대화방을 나갔습니다" }); return navigate("dm-inbox"); }

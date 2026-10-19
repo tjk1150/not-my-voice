@@ -41,9 +41,9 @@ function inboxRows(state) {
     const reel = room.lines.some((line) => line.reel);
     if (state.unread[id] > 0 || room.fresh) rows.push({ id, name: ROOMS[id].name, sub: `${last.text} · 방금`, unread: state.unread[id] > 0, ring: id === "dm:harin", reel, at: room.updated });
   }
-  const requests = state.flags.requests;
-  const lastRequest = requests[requests.length - 1];
-  if (lastRequest) rows.push({ id: "request", name: `메시지 요청 ${requests.length}개`, sub: `${lastRequest.who}: ${lastRequest.text}`, unread: true, request: true, reel: lastRequest.reel, at: lastRequest.at });
+  const requests = state.rooms["dm:request"];
+  const lastRequest = requests.lines[requests.lines.length - 1];
+  if (lastRequest) rows.push({ id: "dm:request", name: `메시지 요청 ${state.flags.requests.length}개`, sub: `${lastRequest.who}: ${lastRequest.text}`, unread: state.unread["dm:request"] > 0, request: true, reel: requests.lines.some((line) => line.reel), at: requests.updated });
   rows.sort((a, b) => b.at - a.at);
   // 수아 sits among the old threads until her message arrives: two days ago they planned lunch together.
   const old = state.rooms["dm:sua"].fresh ? [] : [{ id: "", name: "수아", sub: "월요일에 같이 매점 가자 · 2일" }];
@@ -89,7 +89,7 @@ const typingBubble = (who, size = 28) => `<div class="m pop">${face(who, size)}<
 export function feedRoom(state, id) {
   const room = state.rooms[id];
   const info = ROOMS[id];
-  const avatarHtml = info.group ? groupAv(40) : face(info.name, 40);
+  const avatarHtml = info.group ? groupAv(40) : info.request ? avatar(40, ic("user-round", 22, 2), "#c7ccd4") : face(info.name, 40);
   const leave = info.group && state.guide === "leave" ? `<span class="leave blink" data-go="leave">나가기</span>` : "";
   return `
   <div class="screen">
@@ -98,7 +98,7 @@ export function feedRoom(state, id) {
     <header class="r-head"><span class="gbtn glass" data-go="back">${ic("chevron-left", 26, 2)}</span>
       <span class="who">${avatarHtml}<span><span class="nm">${info.name} ${ic("chevron-right", 16, 2.2)}</span><span class="hd">${info.sub}</span></span></span>
       ${leave}<span class="calls"><span class="gbtn glass">${ic("phone", 24, 1.8)}</span><span class="gbtn glass">${ic("video", 24, 1.8)}</span></span></header>
-    <section class="msgs live">${feedLines(room.lines, info.group, room.pop)}${room.typing ? typingBubble(room.typing) : ""}</section>
+    <section class="msgs live">${feedLines(room.lines, info.group || info.request, room.pop)}${room.typing ? typingBubble(room.typing) : ""}</section>
     ${composer(state, id)}
     ${homeInd()}
   </div>`;
