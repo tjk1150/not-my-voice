@@ -16,7 +16,8 @@ export const SCHOOL_NOTICE = () => `<b>[○○중] 학교폭력 사안 접수 �
 export const buildPhase1 = () => [
   // Act 1, friends: the class DM room, where 지민 shares the reel and the player watches it (#1-7)
   n(0, "R", "feed", "2-3 우리반", `지민: ${ME} 이거 너야?`, { to: "dm-group" }),
-  n(2, "R", "feed", "2-3 우리반", "지민님이 릴스를 보냈습니다", { to: "dm-group" }),
+  // The voice app itself, which let anyone make my voice say anything (ending card "합성 앱").
+  n(2, "R", "voice", "보이스팝", "회원님의 AI 목소리로 '말하기' 영상이 만들어졌어요", { to: "" }),
   n(5, "S4", "feed", "2-3 우리반", "서연: 수아한테 이게 무슨 말이야?", { to: "dm-group" }),
   n(8, "S3", "feed", "2-3 우리반", "새 메시지 12개", { to: "dm-group" }),
   { t: 28, type: "call" },
@@ -27,7 +28,7 @@ export const buildPhase1 = () => [
   line(51, "dm:harin", "하린", "이거 진짜 너 아니지?"),
   line(52, "dm:harin", "하린", "말 좀 해봐"),
   // Act 2, it spreads: the same reel keeps arriving in my DMs, from farther and farther away (#8-15).
-  // The player opens the first one, reports the reel, and gets only "검토 중".
+  // The player opens the first one and sees the numbers climb; there is nothing to do but watch.
   share(53, "S2", "dm:minjae", "민재", "너네 반 걔 맞지? 대전에 태그돼 있던데", { act: [PEOPLE.daejeon, "님이 회원님을 릴스에 태그했습니다."] }),
   request(58, "S2", "moon-k", "너가 그 ○○중 2-3 걔임?", true, { act: ["jimin-2-3", "님 외 22명이 회원님이 태그된 릴스를 좋아합니다."] }),
   share(62, "R", "dm:jiwon", "지원", "추천에 떠서 봤어. 이거 너 아니지?"),

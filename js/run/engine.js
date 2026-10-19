@@ -132,14 +132,15 @@ export function start(root, params) {
     if (state.storm.on) return null;
     if (state.call.state === "ringing") return "accept";
     if (state.banner && BANNER_ROOMS.includes(state.banner.item.to) && !seen.has(state.banner.item.to)) return "banner";
-    if (view === "lock") return "notif-0";
+    // The lock screen leads into the class room, whatever else has piled on top of its card.
+    if (view === "lock") { const index = state.lockNotifs.findIndex((item) => item.to === "dm-group"); return index >= 0 ? `notif-${index}` : null; }
     // Three acts: the class room and the reel (act 1), the reel arriving again and again (act 2),
     // the adults on 톡 (act 3). Moving between apps is always a banner; home is only a fallback.
     if (view === "home") return t < 112 ? "app-feed" : "app-talk";
     if (view === "dm-inbox") {
       if (!seen.has("dm-group")) return "room-dm-group";
       for (const id of ["dm:sua", "dm:harin", "dm:yerin"]) if (unread[id]) return `room-${id}`;
-      if (!state.reported && rooms[SHARE_ROOMS[0]].fresh) return `room-${SHARE_ROOMS[0]}`;
+      if (!state.sharedReelSeen && rooms[SHARE_ROOMS[0]].fresh) return `room-${SHARE_ROOMS[0]}`;
       if (unread["dm-group"] && t > 47 && t < 60) return "room-dm-group";
       // Each new share makes its row blink: the newest unread one, known person or stranger.
       const arrival = ARRIVAL_ROOMS.filter((id) => unread[id]).sort((a, b) => rooms[b].updated - rooms[a].updated)[0];
@@ -150,8 +151,10 @@ export function start(root, params) {
       if (rooms["dm-group"].lines.some((line) => line.reel) && !seen.has("reels")) return "reel-open";
       return V.canDeny(state) ? "deny" : groupDone && t >= 38 && t < 47 && !state.left && !state.kicked ? "leave" : groupDone && (t >= 50 || state.kicked) ? "back" : null;
     }
-    if (view.startsWith("dm:")) return SHARE_ROOMS.includes(view) && !state.reported ? "reel-open" : "back";
-    if (view === "reels") return state.reported || t < 53 ? "close-reel" : "more";
+    // Act 2 only shows the spread: open the shared reel once, see the numbers, go back. Reporting is
+    // left for the rewind (stop 1), so nothing here leads to it.
+    if (view.startsWith("dm:")) return SHARE_ROOMS.includes(view) && !state.sharedReelSeen ? "reel-open" : "back";
+    if (view === "reels") return "close-reel";
     if (view === "audio") return "close-audio";
     if (view === "comments") return V.commentCount(t) >= 9 ? "close-comments" : null;
     if (view === "more") return "report-go";
@@ -382,7 +385,11 @@ export function start(root, params) {
     if (key === "reason-fake" || key === "reason-other") { state.reported = true; return navigate("report-done"); }
     if (key === "done") return navigate("reels");
     // A reel opens from the card in a DM and closes back to that room.
-    if (key === "reel-open" || key === "tab-reels") { state.reelFrom = key === "reel-open" ? state.view : null; return navigate("reels"); }
+    if (key === "reel-open" || key === "tab-reels") {
+      state.reelFrom = key === "reel-open" ? state.view : null;
+      if (SHARE_ROOMS.includes(state.view)) state.sharedReelSeen = true;
+      return navigate("reels");
+    }
     if (key === "close-reel") return navigate(state.reelFrom || "dm-inbox");
     if (key === "accept") {
       const call = { state: "active", start: state.t, beat: 0, elapsed: 0, speaker: null, audio: "playing" };
