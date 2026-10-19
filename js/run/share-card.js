@@ -1,7 +1,7 @@
-// Draws the story-sized share card on a canvas and returns it as a PNG file.
-// Top: the night's notifications piled at angles under an island-style "알림 47", as the screen froze.
-// Bottom: a story-style poll of the remaining five with the player's pick marked, a question back to
-// the reader, and the link. Never the player's name or the fake clip.
+// Draws the story-sized share card on a canvas and returns it as a PNG file. Four parts, top to bottom:
+// the title, three notifications piled under an island-style "알림 47", a story-style poll of the
+// remaining five with the player's pick marked, and the question with the link.
+// Never the player's name or the fake clip.
 import { SHARE_CARD } from "../data.js";
 import { CARD_SIZE, CARD_COLORS, CARD_APPS, CARD_FONT } from "../constants.js";
 
@@ -9,9 +9,9 @@ const font = (weight, size) => `${weight} ${size}px ${CARD_FONT}`;
 const MID = CARD_SIZE.width / 2;
 
 // Fixed scatter for the pile, back card first: [x offset, y, rotation in degrees].
-const PILE_SPOTS = [[-40, 280, -6], [34, 352, 4], [-14, 424, -3], [48, 496, 5], [-30, 568, -4], [12, 640, 3], [-36, 712, -2]];
+const PILE_SPOTS = [[-26, 470, -5], [22, 562, 3], [0, 654, -1.5]];
 const NOTIF = { width: 860, height: 140, radius: 36, tile: 84 };
-const POLL = { top: 1060, side: 90, row: 68, gap: 14, radius: 34 };
+const POLL = { top: 900, side: 90, row: 84, gap: 16, radius: 42 };
 
 function roundRect(ctx, x, y, width, height, radius, fill) {
   ctx.beginPath();
@@ -78,33 +78,33 @@ function notification(ctx, [app, title, body], [dx, y, degrees], depth) {
 }
 
 function island(ctx) {
-  roundRect(ctx, MID - 170, 150, 340, 92, 46, "#000000");
+  roundRect(ctx, MID - 170, 336, 340, 92, 46, "#000000");
   ctx.font = font(800, 46);
-  centredParts(ctx, [["알림 ", CARD_COLORS.text], ["47", CARD_COLORS.alert]], 212);
+  centredParts(ctx, [["알림 ", CARD_COLORS.text], ["47", CARD_COLORS.alert]], 398);
 }
 
 function poll(ctx, options, picked) {
-  ctx.font = font(800, 38);
-  const height = 82 + 38 + options.length * POLL.row + (options.length - 1) * POLL.gap + 44;
+  ctx.font = font(800, 42);
+  const height = 96 + 44 + options.length * POLL.row + (options.length - 1) * POLL.gap + 48;
   const width = CARD_SIZE.width - POLL.side * 2;
   ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
   ctx.shadowBlur = 40;
   roundRect(ctx, POLL.side, POLL.top, width, height, 48, CARD_COLORS.poll);
   ctx.shadowColor = "transparent";
   ctx.fillStyle = CARD_COLORS.pollInk;
-  ctx.fillText(SHARE_CARD.poll, MID, POLL.top + 82);
+  ctx.fillText(SHARE_CARD.poll, MID, POLL.top + 96);
   options.forEach((label, index) => {
-    const y = POLL.top + 120 + index * (POLL.row + POLL.gap);
+    const y = POLL.top + 140 + index * (POLL.row + POLL.gap);
     const mine = index === picked;
     roundRect(ctx, POLL.side + 40, y, width - 80, POLL.row, POLL.radius, mine ? CARD_COLORS.accent : CARD_COLORS.option);
     ctx.textAlign = "left";
     ctx.fillStyle = mine ? CARD_COLORS.text : CARD_COLORS.pollInk;
-    ctx.font = font(mine ? 800 : 600, 34);
-    ctx.fillText(label, POLL.side + 80, y + 46);
+    ctx.font = font(mine ? 800 : 600, 40);
+    ctx.fillText(label, POLL.side + 84, y + 56);
     if (mine) {
       ctx.textAlign = "right";
-      ctx.font = font(700, 28);
-      ctx.fillText(`✓ ${SHARE_CARD.mine}`, POLL.side + width - 80, y + 45);
+      ctx.font = font(700, 32);
+      ctx.fillText(`✓ ${SHARE_CARD.mine}`, POLL.side + width - 84, y + 55);
     }
     ctx.textAlign = "center";
   });
@@ -126,37 +126,24 @@ export async function drawShareCard({ pick, options, url }) {
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, CARD_SIZE.width, CARD_SIZE.height);
 
+  ctx.fillStyle = CARD_COLORS.text;
+  ctx.font = font(800, 68);
+  ctx.fillText(SHARE_CARD.title, MID, 196);
   ctx.fillStyle = CARD_COLORS.dim;
-  ctx.font = font(600, 32);
-  ctx.fillText(SHARE_CARD.kicker, MID, 100);
+  ctx.font = font(500, 36);
+  ctx.fillText(SHARE_CARD.sub, MID, 262);
 
-  PILE_SPOTS.forEach((spot, index) => notification(ctx, SHARE_CARD.pile[index], spot, index / (PILE_SPOTS.length - 1)));
   island(ctx);
-
-  // The pile sinks into the night before the headline.
-  const fade = ctx.createLinearGradient(0, 780, 0, 900);
-  fade.addColorStop(0, "rgba(11, 12, 16, 0)");
-  fade.addColorStop(1, CARD_COLORS.bg);
-  ctx.fillStyle = fade;
-  ctx.fillRect(0, 780, CARD_SIZE.width, 140);
-
-  ctx.fillStyle = CARD_COLORS.dim;
-  ctx.font = font(500, 40);
-  ctx.fillText(SHARE_CARD.lines[0], MID, 930);
-  ctx.font = font(800, 72);
-  centredParts(ctx, [["하룻밤에 알림 ", CARD_COLORS.text], ["47", CARD_COLORS.alert], ["개", CARD_COLORS.text]], 1012);
+  PILE_SPOTS.forEach((spot, index) => notification(ctx, SHARE_CARD.pile[index], spot, index / (PILE_SPOTS.length - 1)));
 
   const pollEnd = poll(ctx, options, options.indexOf(pick.who));
 
   ctx.fillStyle = CARD_COLORS.text;
-  ctx.font = font(800, 64);
-  ctx.fillText(SHARE_CARD.question, MID, pollEnd + 130);
-  ctx.fillStyle = CARD_COLORS.dim;
-  ctx.font = font(500, 34);
-  ctx.fillText(SHARE_CARD.cta, MID, pollEnd + 210);
+  ctx.font = font(800, 60);
+  ctx.fillText(SHARE_CARD.question, MID, pollEnd + 150);
   ctx.fillStyle = "#9aa6ff";
   ctx.font = font(700, 34);
-  ctx.fillText(url.replace(/^https?:\/\//, "").replace(/\?.*$/, ""), MID, pollEnd + 262);
+  ctx.fillText(url.replace(/^https?:\/\//, "").replace(/\?.*$/, ""), MID, pollEnd + 222);
 
   const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
   return new File([blob], "내가-하지-않은-말.png", { type: "image/png" });
