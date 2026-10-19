@@ -1,33 +1,21 @@
-/* Phase 1 runtime: phone shell, overlays, motion. */
-.run-wrap { min-height: 100vh; display: grid; grid-template-columns: 1fr auto 1fr; column-gap: 40px; align-items: start; align-content: center; padding: 24px; }
-.run-wrap > .phone.run { grid-column: 2; }
-.run-wrap > .run-side { grid-column: 3; justify-self: start; }
+/* Run shell: only the phone, with one bar above it (hint on the left, sound icon on the right).
+   Layouts come from js/run/layout.js: stack keeps the bezel, full fills a phone's screen. */
+.run-wrap { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; }
 .phone.run { position: relative; border-radius: 44px; box-shadow: 0 0 0 10px #111, 0 20px 50px rgba(0, 0, 0, .25); flex: none; }
 .phone.run .scr, .phone.run .ov { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; }
 .phone.run .ov { pointer-events: none; z-index: 90; }
 .phone.run .ov > * { pointer-events: auto; }
-.run-side { width: 280px; position: sticky; top: 32px; font-size: 14px; color: #30343b; }
-.run-side .r-time { font-size: 15px; } .run-side .r-time b { font-size: 34px; font-variant-numeric: tabular-nums; }
-.run-side .r-count { margin-top: 6px; font-size: 15px; } .run-side .r-count b { color: #d0021b; font-size: 20px; }
-.run-side .r-hint { margin-top: 14px; min-height: 22px; font-weight: 700; color: var(--blue); }
-.run-side button { margin-top: 14px; height: 40px; padding: 0 16px; border-radius: 10px; background: #fff; box-shadow: inset 0 0 0 1.5px #c9ccd3; font-weight: 600; cursor: pointer; }
-.run-side .r-sound { width: 40px; padding: 0; display: grid; place-items: center; }
-/* The sound toggle sits at the top right: pinned to the window corner beside the phone, and at the
-   right end of the bar, which moves above the phone in the stack and full layouts. */
-.run-wrap[data-layout="side"] .r-sound { position: fixed; top: 20px; right: 20px; margin: 0; }
-.run-side .r-note { margin-top: 12px; font-size: 12px; color: var(--ink-2); line-height: 18px; }
-
-/* stack and full layouts (see js/run/layout.js): the side panel becomes one bar under the phone. */
-.run-wrap[data-layout="stack"], .run-wrap[data-layout="full"] { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+.run-side { order: -1; width: var(--phone-w); height: 44px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #30343b; }
+.run-side .r-hint { flex: 1; min-width: 0; font-size: 14px; line-height: 18px; font-weight: 700; color: var(--blue); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.run-side .r-sound { flex: none; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: #fff; box-shadow: inset 0 0 0 1.5px #c9ccd3; cursor: pointer; }
+.run-side .r-stats { display: none; flex: none; gap: 10px; font-variant-numeric: tabular-nums; }
+.run-wrap[data-debug] .run-side .r-stats { display: flex; }
+.run-side .r-count b { color: #d0021b; }
 .run-wrap[data-layout="full"] { gap: 0; padding: 0; background: #000; overflow: hidden; }
 .run-wrap[data-layout="full"] .phone.run { border-radius: 0; box-shadow: none; }
-.run-wrap:not([data-layout="side"]) .run-side { order: -1; position: static; width: var(--phone-w); height: 44px; display: flex; align-items: center; gap: 8px; }
-.run-wrap:not([data-layout="side"]) :is(.r-time, .r-count, .r-note) { display: none; }
-.run-wrap:not([data-layout="side"]) .r-hint { flex: 1; min-width: 0; margin: 0; min-height: 0; font-size: 14px; line-height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.run-wrap:not([data-layout="side"]) .run-side button { flex: none; margin: 0; width: 36px; height: 36px; padding: 0; }
 .run-wrap[data-layout="full"] .run-side { padding: 0 12px; color: #fff; }
 .run-wrap[data-layout="full"] .r-hint { color: #a9b3ff; }
-.run-wrap[data-layout="full"] .run-side button { background: rgba(255, 255, 255, .14); box-shadow: none; color: #fff; }
+.run-wrap[data-layout="full"] .r-sound { background: rgba(255, 255, 255, .14); box-shadow: none; color: #fff; }
 
 .startcard { position: absolute; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(0, 0, 0, .72); color: #fff; text-align: center; border-radius: inherit; }
 .startcard p { font-size: 15px; opacity: .7; } .startcard h1 { font-size: 34px; margin: 4px 0 14px; }

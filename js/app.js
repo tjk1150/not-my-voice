@@ -1,6 +1,8 @@
-// Three views: ordered gallery (default), one screen at 393x852 (?s=<id>, used for overlay checks),
+// The playable run (?run, and always when published), plus three design views that open only on a
+// local host: ordered gallery (default), one screen at 393x852 (?s=<id>, used for overlay checks),
 // and step-through play mode (?play, optionally ?play=phase1).
 import { STAGES, ALL } from "./screens.js";
+import { DESIGN_HOSTS } from "./constants.js";
 
 const params = new URLSearchParams(location.search);
 const root = document.getElementById("root");
@@ -70,7 +72,8 @@ function play(stageId) {
 }
 
 const only = params.get("s");
-if (params.has("run")) {
+const designHost = DESIGN_HOSTS.includes(location.hostname);
+if (params.has("run") || !designHost) {
   import("./run/engine.js").then((module) => module.start(root, params));
 } else if (only) {
   document.body.classList.add("single");

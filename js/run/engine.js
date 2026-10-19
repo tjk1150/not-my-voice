@@ -46,8 +46,10 @@ export function start(root, params) {
   root.innerHTML = `
     <div class="phone run"><div class="scr"></div><div class="ov"></div>
       ${skipPrologue ? `<div class="startcard"><div><p>1단계</p><h1>그날 밤</h1><span>밤 11시. 영상 소리(미디어 볼륨)는 꺼 두었어요.<br>깜빡이는 곳을 눌러 확인해 보세요.</span><button data-start>시작</button></div></div>` : ""}</div>
-    <aside class="run-side"><div class="r-time"><b>0:00</b> / 3:00</div><div class="r-count">알림 <b>0</b> / 47</div><p class="r-hint"></p>
-      <button class="r-sound" data-sound aria-label="소리 끄기" title="소리 끄기">${ic("volume-2", 20, 2)}</button><p class="r-note">휴대폰 화면 아래 막대를 누르면 홈으로 갑니다. <a href="./">전체 시안으로</a></p></aside>`;
+    <aside class="run-side"><p class="r-hint"></p><span class="r-stats"><span class="r-time"><b>0:00</b> / 3:00</span><span class="r-count">알림 <b>0</b> / 47</span></span>
+      <button class="r-sound" data-sound aria-label="소리 끄기" title="소리 끄기">${ic("volume-2", 20, 2)}</button></aside>`;
+  // Time and notification count are for checking the run (?debug); students see only the phone.
+  if (params.has("debug")) root.dataset.debug = "";
   const phone = root.querySelector(".phone");
   bindLayout(root, phone);
   const scr = root.querySelector(".scr");
