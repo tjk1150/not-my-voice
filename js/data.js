@@ -102,7 +102,7 @@ export const TITLE = {
   title: "내가 하지 않은 말",
   note: "AI 윤리 체험 · 약 15분 · 소리를 켜 주세요",
   fiction: "등장하는 이름과 계정은 모두 가상입니다",
-  cta: "휴대폰 켜기",
+  cta: "시작하기",
 };
 
 // After the freeze, before the rewind: what the player is left alone with ([small line, big line]).

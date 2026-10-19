@@ -82,7 +82,7 @@ export function runPrologue(scr, { icons }) {
       resolve({ name: st.name, choice: st.song });
     }
 
-    // Title first; the name screen comes after "휴대폰 켜기". That tap is the first one, so it also
+    // Title first; the name screen comes after "시작하기". That tap is the first one, so it also
     // unlocks audio (engine pointerdown) and the prologue music starts with it.
     let input = null;
     async function showName() {

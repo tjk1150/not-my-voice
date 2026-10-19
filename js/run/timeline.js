@@ -17,9 +17,9 @@ export const buildPhase1 = () => [
   // Act 1, friends: the class DM room, where 지민 shares the reel and the player watches it (#1-7)
   n(0, "R", "feed", "2-3 우리반", `지민: ${ME} 이거 너야?`, { to: "dm-group" }),
   // The voice app itself, which let anyone make my voice say anything (ending card "합성 앱").
-  n(2, "R", "voice", "보이스팝", "회원님의 AI 목소리로 '말하기' 영상이 만들어졌어요", { to: "" }),
-  n(5, "S4", "feed", "2-3 우리반", "서연: 수아한테 이게 무슨 말이야?", { to: "dm-group" }),
-  n(8, "S3", "feed", "2-3 우리반", "새 메시지 12개", { to: "dm-group" }),
+  n(1, "R", "voice", "보이스팝", "회원님의 AI 목소리로 '말하기' 영상이 만들어졌어요", { to: "" }),
+  n(2, "S4", "feed", "2-3 우리반", "서연: 수아한테 이게 무슨 말이야?", { to: "dm-group" }),
+  n(3, "S3", "feed", "2-3 우리반", "새 메시지 12개", { to: "dm-group" }),
   { t: 28, type: "call" },
   n(40, "S2", "feed", "예린", "너 대전에 태그돼 있던데", { to: "dm:yerin", room: "dm:yerin", msg: { who: "예린", text: "너 대전에 태그돼 있던데" } }),
   line(41, "dm:yerin", "예린", "진짜 수아한테 그랬어?"),

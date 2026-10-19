@@ -15,7 +15,7 @@ export const monoCard = (top, main, extra = "", cls = "") => `
 export const card = (top = "2주 전", bottom = "오후 7:10") => monoCard(top, bottom);
 
 // The first screen: notifications drop in (CSS delays), then the hook line, the title and the button.
-// It is silent: browsers allow sound only after a tap, so sound starts with "휴대폰 켜기".
+// It is silent: browsers allow sound only after a tap, so sound starts with "시작하기".
 export const titleScreen = (live = false) => `
   <div class="screen mono title">
     <div class="tease">${TITLE.teaser.map((item, index) => `<div class="tease-card" style="animation-delay:${(TEASE_FIRST_MS + index * TEASE_STEP_MS) / 1000}s">${notifCard(item)}</div>`).join("")}</div>
