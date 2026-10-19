@@ -20,7 +20,7 @@ export const titleScreen = (live = false) => `
   <div class="screen mono title">
     <div class="tease">${TITLE.teaser.map((item, index) => `<div class="tease-card" style="animation-delay:${(TEASE_FIRST_MS + index * TEASE_STEP_MS) / 1000}s">${notifCard(item)}</div>`).join("")}</div>
     <div class="tease-hook"><p>${TITLE.hook}</p><h1>${TITLE.title}</h1></div>
-    <div class="title-foot"><span>${TITLE.note}</span><button class="btn-main ${live ? "" : "blink"}" ${live ? 'data-p="title-go"' : ""}>${ic("power", 18, 2.4)} ${TITLE.cta}</button></div>
+    <div class="title-foot"><span>${TITLE.note}</span><button class="btn-main ${live ? "" : "blink"}" ${live ? 'data-p="title-go"' : ""}>${ic("power", 18, 2.4)} ${TITLE.cta}</button><small>${TITLE.fiction}</small></div>
   </div>`;
 
 export function nameInput() {
