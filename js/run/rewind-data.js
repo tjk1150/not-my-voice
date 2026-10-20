@@ -78,7 +78,7 @@ export const CHANGED = ["어른에게 알리고 신고하기", "프로필에서 
 
 // Ending copy: the drop in one line, what the player changed, then the question over the five cards that remain.
 export const END = {
-  head: "나를 가해자로 몰던 알림이 47개에서 5개로 줄었어요.",
+  head: "나를 가해자로 몰던 알림이<br>47개에서 5개로 줄었어요.",
   changed: "내가 바꾼 것",
   question: "누구의 책임일까요?",
   tip: "남은 알림을 하나씩 눌러 보세요",
