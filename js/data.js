@@ -93,7 +93,7 @@ export const PHOTOS = {
 export const TITLE = {
   teaser: [
     { app: "feed", title: "수아", body: "나한테 왜 그랬어?", when: "오후 11:06" },
-    { app: "feed", title: "하준", body: "3학년 단톡에도 돌아", when: "오후 11:06" },
+    { app: "feed", title: "하준", body: "3학년 단톡에도 퍼지고 있어", when: "오후 11:06" },
     { app: "feed", title: "수아", body: "나 내일 학교 못 가겠어", when: "오후 11:07" },
   ],
   hook: "분명 내 목소리인데,<br>나는 그런 말을 한 적이 없다.",
