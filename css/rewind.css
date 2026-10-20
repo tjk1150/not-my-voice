@@ -80,10 +80,8 @@
 /* New night and ending */
 /* Ending spacing: 24 side margins, 32 between sections, 12 from a label to its content, 8 between cards and lines */
 .screen.end { background: #fff; overflow-y: auto; scrollbar-width: none; padding: 72px 24px 48px; word-break: keep-all; }
-.e-big { font-size: 44px; line-height: 52px; font-weight: 800; letter-spacing: -1px; color: #111; }
-.e-big b { color: #d0021b; }
-.e-sub { margin-top: 8px; font-size: 16px; line-height: 24px; color: #3a3f47; }
 .e-sec { margin-top: 32px; }
+.e-sec:first-child { margin-top: 0; }
 .e-label { font-size: 13px; line-height: 18px; font-weight: 700; color: var(--ink-2); }
 .e-checks { list-style: none; margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
 .e-checks li { display: flex; align-items: center; gap: 10px; font-size: 15px; line-height: 22px; color: #1d2433; }

@@ -76,13 +76,12 @@ export const MOM_REPLY = "아직. 지금 신고할게";
 
 export const CHANGED = ["어른에게 알리고 신고하기", "프로필에서 학교와 반 지우기", "브이로그 계정 비공개로 바꾸기", "앱의 선택 동의 끄기"];
 
-// Ending copy: the drop, what the player changed, then the question over the five cards that remain.
+// Ending copy: what the player changed, then the question over the five cards that remain.
 export const END = {
-  sub: "같은 밤, 알림이 47개에서 5개로 줄었어요.",
   changed: "내가 바꾼 것",
-  question: "남은 5개는 누구의 몫일까요?",
+  question: "누구의 책임일까요?",
   tip: "남은 알림을 하나씩 눌러 보세요",
-  note: "조심하면 피해를 줄일 수 있어요. 하지만 잘못은 영상을 만들고 퍼뜨린 쪽에 있어요.",
+  note: "AI를 만든 사람도, 서비스로 내놓은 회사도, 영상을 받아 퍼뜨린 사람도 각자 책임이 있어요.",
 };
 
 export const HELP = [
