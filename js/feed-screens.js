@@ -1,6 +1,6 @@
 // 피드 screens filled with the phase 1 script (design/ai-ethics-v0-phase1-timetable.md).
 import { ic, statusBar } from "./icons.js";
-import { ME, PEOPLE, FAKE_LINE, REEL_COMMENTS, VOICE_MEMES, DENY_TEXT } from "./data.js";
+import { ME, PEOPLE, FAKE_LINE, REEL_COMMENTS, VOICE_MEMES } from "./data.js";
 import { face } from "./faces.js";
 import { clip } from "./clip.js";
 import { REEL_GO } from "./constants.js";
@@ -106,9 +106,11 @@ export function dmGroup() {
 }
 
 // Composer with the prefilled denial and a blinking send button (class room only).
-export const denyComposer = () => `<div class="composer typed"><span class="cam">${ic("camera", 22, 2.2)}</span><span class="txt">${DENY_TEXT}</span>
-  <span class="sendb" data-go="deny">${ic("arrow-up", 20, 2.6)}</span></div>`;
-export const kickedComposer = () => `<div class="composer closed">이 대화방에 더 이상 메시지를 보낼 수 없습니다.</div>`;
+// Reply chips above the composer: tapping one sends it (phase 1's three tries to explain).
+export const replyComposer = (chips) => `<div class="replies">${chips.map((text, index) => `<span class="reply-chip" data-go="reply-${index}">${text}</span>`).join("")}</div>
+  <div class="composer"><span class="cam">${ic("camera", 22, 2.2)}</span><span class="ph">메시지 보내기...</span></div>`;
+export const closedComposer = (text) => `<div class="composer closed">${text}</div>`;
+export const kickedComposer = () => closedComposer("이 대화방에 더 이상 메시지를 보낼 수 없습니다.");
 
 export function dmOne() {
   return `

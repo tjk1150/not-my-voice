@@ -19,9 +19,6 @@ export function color(name) {
 const fakeLine = (name) => `안녕하세요, 저는 ${name}입니다.<br>수아 걔 진짜 역겹지 않냐?<br>내일 애들이랑 확실히 밟아 줄 거야.`;
 export let FAKE_LINE = fakeLine(ME);
 
-// The one reply the player can send in the class room (a send button, not a choice). It backfires.
-export const DENY_TEXT = "나 아니야. 나 그런 말 한 적 없어";
-
 // Reels made with "my" AI voice, shown on the audio page of the fake reel: [caption, hue].
 export const VOICE_MEMES = (name) => [
   [`${name} 목소리로 급식 리뷰`, 0],

@@ -23,7 +23,7 @@ export const buildPhase1 = () => [
   { t: 15, type: "call" },
   n(40, "S2", "feed", "예린", "너 대전에 태그돼 있던데", { to: "dm:yerin", room: "dm:yerin", msg: { who: "예린", text: "너 대전에 태그돼 있던데" } }),
   line(41, "dm:yerin", "예린", "진짜 수아한테 그랬어?"),
-  n(47, "S1", "feed", "2-3 우리반", "지민님이 회원님을 다시 추가했습니다", { to: "dm-group", rejoin: true }),
+  n(47, "S1", "feed", "2-3 우리반", "서연: 수아한테 사과는 해야지", { to: "dm-group", nudge: true }),
   n(50, "S1", "feed", "하린", "괜찮아? 이거 진짜 너 아니지? 말 좀 해봐", { to: "dm:harin", room: "dm:harin", msg: { who: "하린", text: "괜찮아?" } }),
   line(51, "dm:harin", "하린", "이거 진짜 너 아니지?"),
   line(52, "dm:harin", "하린", "말 좀 해봐"),

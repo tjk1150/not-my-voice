@@ -14,7 +14,8 @@ export const TAP_TO_VIEW = { "app-feed": "dm-inbox", "app-talk": "talk-list", "t
 // Banners that lead the player into the next room. Until that room is opened they stay up, so the
 // way from 피드 to 톡 is always a banner and never the home screen.
 export const BANNER_ROOMS = ["dm:harin", "dm:minjae", "dm:sua", "talk:teacher"];
-export const TALK_ORDER = ["talk:teacher", "talk:mom", "talk:tutor", "talk:chaewon"];
+// 톡 rooms the player is led into, in order. 학원 선생님 and 채원 only pile up in the chat list.
+export const TALK_ORDER = ["talk:teacher", "talk:mom"];
 
 // Pause between classmates' lines in the group call.
 export const CALL_GAP_MS = 180;

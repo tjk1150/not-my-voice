@@ -1,8 +1,7 @@
 // Phase 1 runtime: real time drives the game clock (15 s = 1 game minute), notifications,
 // room scripts, the bullies' group call and the storm. The player only taps; the next target blinks.
 import { buildPhase1, STORM, SECONDS_PER_GAME_MINUTE } from "./timeline.js";
-import { ROOMS, SHARE_ROOMS, ARRIVAL_ROOMS, groupScript, rejoinLines, STAYED_LINES, CALL_LINES, DENY_REPLIES, KICK_LINES } from "./rooms.js";
-import { DENY_TEXT } from "../data.js";
+import { ROOMS, SHARE_ROOMS, REPLIES, groupScript, STAYED_LINES, CALL_LINES, KICK_LINES } from "./rooms.js";
 import { runPrologue } from "./prologue.js";
 import { runRewind } from "./rewind.js";
 import { playCall } from "./call-audio.js";
@@ -27,7 +26,7 @@ function initialState() {
   return {
     events: buildPhase1(), t: 0, next: 0, fired: 0, view: "lock", locked: true, clock: "11:00", rooms, unread: {}, notifs: [], lockNotifs: [], banner: null,
     activity: [], activityFresh: false, flags: { requests: [], follow: 0 }, reel: { likes: 23, shares: 3 }, commentsShown: 0, commentsFresh: false,
-    reported: false, left: false, denied: false, kicked: false, call: { state: "none" }, storm: { on: false, count: 0, frozen: false }, seen: new Set(["lock"]), guide: null,
+    reported: false, replied: {}, pending: [], kicked: false, call: { state: "none" }, storm: { on: false, count: 0, frozen: false }, seen: new Set(["lock"]), guide: null,
   };
 }
 
@@ -129,31 +128,36 @@ export function start(root, params) {
   function guideFor() {
     const { view, t, seen, unread, rooms } = state;
     const groupDone = rooms["dm-group"].started && !rooms["dm-group"].queue.length && !rooms["dm-group"].typing;
+    // "Back" waits until a room has gone quiet, so a reply or a burst of messages is read before leaving.
+    const settled = (id) => t - rooms[id].updated >= 2 && !state.pending.some((item) => item.room === id);
     if (state.storm.on) return null;
     if (state.call.state === "ringing") return "accept";
+    // Three tries to explain (class room, 하린, 수아): the first reply chip blinks, and a banner waits
+    // until the answer to it has arrived, so the failure is read before anything pulls the player away.
+    if (V.canReply(state, view)) return "reply-0";
+    if (state.pending.some((item) => item.room === view)) return null;
     if (state.banner && BANNER_ROOMS.includes(state.banner.item.to) && !seen.has(state.banner.item.to)) return "banner";
     // The lock screen leads into the class room, whatever else has piled on top of its card.
     if (view === "lock") { const index = state.lockNotifs.findIndex((item) => item.to === "dm-group"); return index >= 0 ? `notif-${index}` : null; }
     // Three acts: the class room and the reel (act 1), the reel arriving again and again (act 2),
     // the adults on 톡 (act 3). Moving between apps is always a banner; home is only a fallback.
+    // The player is led into few rooms: the class room, 하린, the first share, 수아, then 담임 and 엄마.
+    // Everything else piles up unguided, so the spread is watched, not opened one room at a time.
     if (view === "home") return t < 112 ? "app-feed" : "app-talk";
     if (view === "dm-inbox") {
       if (!seen.has("dm-group")) return "room-dm-group";
-      for (const id of ["dm:sua", "dm:harin", "dm:yerin"]) if (unread[id]) return `room-${id}`;
+      for (const id of ["dm:sua", "dm:harin"]) if (unread[id]) return `room-${id}`;
       if (!state.sharedReelSeen && rooms[SHARE_ROOMS[0]].fresh) return `room-${SHARE_ROOMS[0]}`;
-      if (unread["dm-group"] && t > 47 && t < 60) return "room-dm-group";
-      // Each new share makes its row blink: the newest unread one, known person or stranger.
-      const arrival = ARRIVAL_ROOMS.filter((id) => unread[id]).sort((a, b) => rooms[b].updated - rooms[a].updated)[0];
-      if (arrival) return `room-${arrival}`;
       return t >= 112 && !seen.has("talk:teacher") ? "home" : null;
     }
     if (view === "dm-group") {
       if (rooms["dm-group"].lines.some((line) => line.reel) && !seen.has("reels")) return "reel-open";
-      return V.canDeny(state) ? "deny" : groupDone && t >= 38 && t < 47 && !state.left && !state.kicked ? "leave" : groupDone && (t >= 50 || state.kicked) ? "back" : null;
+      return groupDone && (t >= 50 || state.kicked) ? "back" : null;
     }
     // Act 2 only shows the spread: open the shared reel once, see the numbers, go back. Reporting is
     // left for the rewind (stop 1), so nothing here leads to it.
-    if (view.startsWith("dm:")) return SHARE_ROOMS.includes(view) && !state.sharedReelSeen ? "reel-open" : "back";
+    if (view === SHARE_ROOMS[0] && !state.sharedReelSeen) return "reel-open";
+    if (view.startsWith("dm:")) return (REPLIES[view] && !state.replied[view]) || !settled(view) ? null : "back";
     if (view === "reels") return "close-reel";
     if (view === "audio") return "close-audio";
     if (view === "comments") return V.commentCount(t) >= 9 ? "close-comments" : null;
@@ -165,7 +169,7 @@ export function start(root, params) {
       const next = TALK_ORDER.find((id) => unread[id]);
       return next ? `room-${next}` : null;
     }
-    if (view.startsWith("talk:")) return "back";
+    if (view.startsWith("talk:")) return settled(view) ? "back" : null;
     return null;
   }
 
@@ -174,7 +178,6 @@ export function start(root, params) {
     if (!force && next === state.guide) return;
     const before = state.guide;
     state.guide = next;
-    if (before !== next && (next === "leave" || before === "leave")) return renderView();
     root.querySelectorAll("[data-guided]").forEach((el) => { el.classList.remove("blink", "guide-ring"); el.removeAttribute("data-guided"); });
     // Phase 1 guides only by the blinking target inside the phone: no text outside it.
     if (!next) return;
@@ -241,16 +244,17 @@ export function start(root, params) {
   function fire(ev) {
     if (ev.type === "notif") {
       let body = ev.unreported && !state.reported ? ev.unreported : ev.body;
-      if (ev.rejoin) {
-        // Stayed and denied: no "read and ignored" jab, the room just moves on.
-        const stayed = state.denied ? STAYED_LINES.slice(1) : STAYED_LINES;
-        const lines = state.left ? rejoinLines() : stayed;
-        if (!state.left) body = `${stayed[0].who}: ${stayed[0].text}`;
+      if (ev.nudge) {
+        // Answered already: no "read and ignored" jab, the room just moves on.
+        const lines = state.replied["dm-group"] ? STAYED_LINES.slice(1) : STAYED_LINES;
+        body = `${lines[0].who}: ${lines[0].text}`;
         queueGroup(lines);
       }
       if (ev.kick) { state.kicked = true; queueGroup(KICK_LINES); }
-      const msg = state.denied && ev.deniedMsg ? ev.deniedMsg : ev.msg;
-      if (state.denied && ev.deniedBody) body = ev.deniedBody;
+      // A line written for a player who already explained in the class room.
+      const explained = state.replied["dm-group"];
+      const msg = explained && ev.deniedMsg ? ev.deniedMsg : ev.msg;
+      if (explained && ev.deniedBody) body = ev.deniedBody;
       const item = { app: ev.app, title: ev.title, body, to: ev.to, opened: false };
       state.notifs.push(item);
       if (ev.share) { pushLine(ev.room, { who: ev.share.who, reel: true }); pushLine(ev.room, { who: ev.share.who, text: ev.share.text }); }
@@ -293,6 +297,12 @@ export function start(root, params) {
       state.next += 1;
       viewDirty = true;
       overlayDirty = true;
+    }
+    // Answers to a reply chip outside the class room arrive one by one.
+    while (state.pending.length && state.pending[0].at <= t) {
+      const { room, line } = state.pending.shift();
+      pushLine(room, line);
+      if (state.view === room) viewDirty = true;
     }
     const group = state.rooms["dm-group"];
     if (group.started && (group.queue.length || group.typing) && t >= group.nextAt) {
@@ -381,8 +391,19 @@ export function start(root, params) {
     if (key === "banner") { const to = state.banner?.item.to; state.banner = null; renderOverlay(); return navigate(to); }
     if (key.startsWith("room-")) return navigate(key.slice(5));
     if (key === "back") return navigate(state.view.startsWith("talk:") ? "talk-list" : "dm-inbox");
-    if (key === "deny") { state.denied = true; queueGroup([{ who: "me", text: DENY_TEXT }, ...DENY_REPLIES]); return renderView(); }
-    if (key === "leave") { state.left = true; state.rooms["dm-group"].lines.push({ sys: "회원님이 대화방을 나갔습니다" }); return navigate("dm-inbox"); }
+    if (key.startsWith("reply-")) {
+      const id = state.view;
+      const reply = REPLIES[id];
+      if (!reply || !V.canReply(state, id)) return;
+      const sent = { who: "me", text: reply.chips[Number(key.slice(6))] };
+      state.replied = { ...state.replied, [id]: true };
+      if (id === "dm-group") queueGroup([sent, ...reply.answers]);
+      else {
+        pushLine(id, sent);
+        state.pending = [...state.pending, ...reply.answers.map((line, index) => ({ at: state.t + 1.2 * (index + 1), room: id, line }))];
+      }
+      return renderView();
+    }
     if (key === "reason-fake" || key === "reason-other") { state.reported = true; return navigate("report-done"); }
     if (key === "done") return navigate("reels");
     // A reel opens from the card in a DM and closes back to that room.

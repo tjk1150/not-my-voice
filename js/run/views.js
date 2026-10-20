@@ -3,10 +3,10 @@
 import { ic, statusBar, avatar } from "../icons.js";
 import { ME, PEOPLE, REEL_COMMENTS } from "../data.js";
 import { face } from "../faces.js";
-import { tabbar, ringAv, groupAv, bubble, reelCard, reels as reelsStatic, commentsSheet, audioPage, denyComposer, kickedComposer, moreSheet, reportReasons, reportDone } from "../feed-screens.js";
+import { tabbar, ringAv, groupAv, bubble, reelCard, reels as reelsStatic, commentsSheet, audioPage, replyComposer, closedComposer, kickedComposer, moreSheet, reportReasons, reportDone } from "../feed-screens.js";
 import { sq, stranger, msg } from "../talk-screens.js";
 import { card, home as homeStatic } from "../ios-screens.js";
-import { ROOMS, OLD_DMS, CALLERS, SHARE_ROOMS } from "./rooms.js";
+import { ROOMS, OLD_DMS, CALLERS, SHARE_ROOMS, REPLIES } from "./rooms.js";
 
 const homeInd = (light = false) => `<i class="home-ind ${light ? "light" : ""}"></i><span class="home-hit" data-go="home"></span>`;
 
@@ -39,7 +39,7 @@ function inboxRows(state) {
     const room = state.rooms[id];
     const last = room.lines[room.lines.length - 1];
     const reel = room.lines.some((line) => line.reel);
-    if (state.unread[id] > 0 || room.fresh) rows.push({ id, name: ROOMS[id].name, sub: `${last.text} · 방금`, unread: state.unread[id] > 0, ring: id === "dm:harin", reel, at: room.updated });
+    if (state.unread[id] > 0 || room.fresh) rows.push({ id, name: ROOMS[id].name, sub: `${last.text || last.sys} · 방금`, unread: state.unread[id] > 0, ring: id === "dm:harin", reel, at: room.updated });
   }
   const requests = state.rooms["dm:request"];
   const lastRequest = requests.lines[requests.lines.length - 1];
@@ -58,7 +58,7 @@ export function dmInbox(state) {
     <section class="dm-list">${inboxRows(state)
       .slice(0, 9)
       .map(
-        (row) => `<div class="dm-row ${row.unread ? "unread" : ""}" ${row.id ? `data-go="room-${row.id}"` : ""}>
+        (row) => `<div class="dm-row ${row.unread ? "unread" : ""} ${row.unread && state.t - row.at < 1.2 ? "arrive" : ""}" ${row.id ? `data-go="room-${row.id}"` : ""}>
           ${row.group ? groupAv() : row.request ? avatar(56, ic("user-round", 30, 2), "#c7ccd4") : row.ring ? ringAv(row.name, 56) : face(row.name, 56)}
           <div class="txt"><div class="name">${row.name}</div><div class="sub">${row.sub}</div></div>${row.reel ? `<span class="thumb" style="background-image:url(${REEL_THUMB})"></span>` : ""}${row.unread ? '<i class="udot"></i>' : ""}</div>`
       )
@@ -90,29 +90,33 @@ export function feedRoom(state, id) {
   const room = state.rooms[id];
   const info = ROOMS[id];
   const avatarHtml = info.group ? groupAv(40) : info.request ? avatar(40, ic("user-round", 22, 2), "#c7ccd4") : face(info.name, 40);
-  const leave = info.group && state.guide === "leave" ? `<span class="leave blink" data-go="leave">나가기</span>` : "";
+  const replies = canReply(state, id) ? REPLIES[id].chips.length : 0;
   return `
-  <div class="screen">
+  <div class="screen ${replies ? "has-replies" : ""}" style="--replies:${replies}">
     ${statusBar(state.clock)}
     <div class="fade-top"></div>
     <header class="r-head"><span class="gbtn glass" data-go="back">${ic("chevron-left", 26, 2)}</span>
       <span class="who">${avatarHtml}<span><span class="nm">${info.name} ${ic("chevron-right", 16, 2.2)}</span><span class="hd">${info.sub}</span></span></span>
-      ${leave}<span class="calls"><span class="gbtn glass">${ic("phone", 24, 1.8)}</span><span class="gbtn glass">${ic("video", 24, 1.8)}</span></span></header>
+      <span class="calls"><span class="gbtn glass">${ic("phone", 24, 1.8)}</span><span class="gbtn glass">${ic("video", 24, 1.8)}</span></span></header>
     <section class="msgs live">${feedLines(room.lines, info.group || info.request, room.pop)}${room.typing ? typingBubble(room.typing) : ""}</section>
     ${composer(state, id)}
     ${homeInd()}
   </div>`;
 }
 
-// The class room offers one prefilled denial once its script has played; after removal it is closed.
-export const canDeny = (state) => {
-  const room = state.rooms["dm-group"];
-  return room.started && !room.queue.length && !room.typing && !state.denied && !state.kicked;
-};
+// A room offers its reply chips once, after its own lines have arrived (the class room: after its script).
+export function canReply(state, id) {
+  const reply = REPLIES[id];
+  const room = state.rooms[id];
+  if (!reply || state.replied[id] || state.t < (reply.after || 0)) return false;
+  if (id === "dm-group") return room.started && !room.queue.length && !room.typing && !state.kicked;
+  return room.fresh;
+}
 
 function composer(state, id) {
   if (id === "dm-group" && state.kicked) return kickedComposer();
-  if (id === "dm-group" && canDeny(state)) return denyComposer();
+  if (canReply(state, id)) return replyComposer(REPLIES[id].chips);
+  if (state.replied[id] && REPLIES[id].closed) return closedComposer(REPLIES[id].closed);
   return `<div class="composer"><span class="cam">${ic("camera", 22, 2.2)}</span><span class="ph">메시지 보내기...</span>
       <span class="tools">${ic("mic", 22, 2)}${ic("image", 22, 2)}${ic("sticker", 22, 2)}${ic("circle-plus", 22, 2)}</span></div>`;
 }

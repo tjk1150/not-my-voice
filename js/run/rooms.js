@@ -20,13 +20,29 @@ export const groupScript = () => [
   say("지민", "수아 나갔다. 어떡할 거야"),
 ];
 
-// After the player leaves at about 0:45 and is added back at 0:47.
-export const rejoinLines = () => [sys("지민님이 회원님을 추가했습니다"), say("지민", "어디 가? 도망감?"), say("도윤", `${ME} 방 나갔다 들어옴ㅋㅋ 찔리나 봄`), say("서연", "수아한테 사과는 해야지"), say("지민", "대전에도 올라왔더라ㅋㅋ 다른 학교 애들도 봄")];
-// If the player stayed in the room instead.
+// The class room keeps going at 0:47 (a player who has not answered also gets "읽씹 실화?").
 export const STAYED_LINES = [say("지민", "읽씹 실화?"), say("서연", "수아한테 사과는 해야지"), say("지민", "대전에도 올라왔더라ㅋㅋ 다른 학교 애들도 봄")];
 
-// Replies to the player's one denial: explaining only makes it look worse.
-export const DENY_REPLIES = [say("도윤", "AI 핑계 대는 거 봐ㅋㅋ"), say("서연", "그럼 증거 있어?"), say("현우", "녹음이 거짓말하냐?"), say("지민", "인사도 브이로그랑 똑같던데")];
+// The player tries to explain three times, by picking a reply chip, and each try fails differently:
+// the class mocks it, a friend doubts it, and 수아 cannot be reached. "after" waits for the room's own
+// lines (game seconds); "answers" arrive one by one; "closed" replaces the composer once sent.
+export const REPLIES = {
+  "dm-group": {
+    chips: ["나 아니야. 나 그런 말 한 적 없어", "AI로 만든 거야. 내 목소리 아니야"],
+    answers: [say("도윤", "AI 핑계 대는 거 봐ㅋㅋ"), say("서연", "그럼 증거 있어?"), say("현우", "녹음이 거짓말하냐?"), say("지민", "인사도 브이로그랑 똑같던데")],
+  },
+  "dm:harin": {
+    after: 52,
+    chips: ["진짜 나 아니야. 믿어 줘"],
+    answers: [say("하린", "근데 목소리가 너잖아…"), say("하린", "나도 모르겠어")],
+  },
+  "dm:sua": {
+    after: 101,
+    chips: ["내가 한 거 아니야. 진짜야"],
+    answers: [sys("메시지를 보내지 못했습니다. 수아님이 메시지를 받지 않아요")],
+    closed: "수아님에게 메시지를 보낼 수 없습니다.",
+  },
+};
 
 export const KICK_LINES = [sys("지민님이 회원님을 내보냈습니다")];
 
@@ -66,10 +82,9 @@ export const ROOMS = {
   "dm:request": { app: "feed", name: "메시지 요청", sub: "팔로우하지 않는 계정", request: true, history: [] },
 };
 
-// Share threads in arrival order; the first one is where the player opens the reel and reports it.
-// The request thread counts too: each new share, known or not, makes its row blink in the inbox.
+// Share threads in arrival order. Only the first is opened (the reel again, with its numbers); the rest
+// pile up in the inbox with the same thumbnail while the player watches.
 export const SHARE_ROOMS = ["dm:minjae", "dm:jiwon", "dm:yuna", "dm:hajun"];
-export const ARRIVAL_ROOMS = [...SHARE_ROOMS, "dm:request"];
 
 // Old threads in the DM inbox, so the list looks lived in.
 export const OLD_DMS = [
