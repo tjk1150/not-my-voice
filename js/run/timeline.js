@@ -1,10 +1,12 @@
 // Phase 1 events, copied from design/ai-ethics-v0-phase1-timetable.md. t = real seconds from 0:00.
 // "to" is where a tap on the notification leads; "room" + "msg" add a line to that room when it fires.
 // "tag" is the cause the notification comes from; phase 2 shatters each tag's notifications.
+// A "gate" holds the story clock at its time until the player has done one thing (see gates.js).
 import { ME, PEOPLE, STORM } from "../data.js";
 
 const n = (t, tag, app, title, body, extra = {}) => ({ t, tag, type: "notif", app, title, body, ...extra });
 const line = (t, room, who, text) => ({ t, type: "line", room, msg: { who, text } });
+const gate = (t, kind, room) => ({ t, type: "gate", gate: kind, room });
 // Act 2: someone sends me the reel with one line. Known people get a thread, strangers a request.
 // "extra" fills the heart (activity) tab quietly: tags, likes, comments and follows that come with the spread.
 const share = (t, tag, room, who, text, extra = {}) => n(t, tag, "feed", who, `릴스를 보냈습니다 · ${text}`, { to: room, room, share: { who, text }, ...extra });
@@ -20,18 +22,23 @@ export const buildPhase1 = () => [
   n(1, "R", "voice", "보이스팝", "회원님의 AI 목소리로 '말하기' 영상이 만들어졌어요", { to: "" }),
   n(2, "S4", "feed", "2-3 우리반", "서연: 수아한테 이게 무슨 말이야?", { to: "dm-group" }),
   n(3, "S3", "feed", "2-3 우리반", "새 메시지 12개", { to: "dm-group" }),
+  // The call waits for the first try to explain in the class room, and 예린 for the call to end.
+  gate(15, "reply", "dm-group"),
   { t: 15, type: "call" },
+  gate(27, "call"),
   n(27, "S2", "feed", "예린", "너 학교 제보 계정에 태그돼 있던데", { to: "dm:yerin", room: "dm:yerin", msg: { who: "예린", text: "너 학교 제보 계정에 태그돼 있던데" } }),
   line(28, "dm:yerin", "예린", "진짜 수아한테 그랬어?"),
   n(33, "S1", "feed", "2-3 우리반", "서연: 수아한테 사과는 해야지", { to: "dm-group", nudge: true }),
   n(38, "S1", "feed", "하린", "괜찮아? 이거 진짜 너 아니지? 말 좀 해봐", { to: "dm:harin", room: "dm:harin", msg: { who: "하린", text: "괜찮아?" } }),
   line(39, "dm:harin", "하린", "이거 진짜 너 아니지?"),
   line(40, "dm:harin", "하린", "말 좀 해봐"),
+  gate(47, "reply", "dm:harin"),
   // A bridge into act 2 (not counted): the class hears it has reached another class.
   line(47, "dm-group", "현우", "2반 단톡에도 올라왔대"),
   // Act 2, it spreads: the same reel keeps arriving in my DMs, from farther and farther away (#8-15).
   // The player opens the first one and sees the numbers climb; there is nothing to do but watch.
   share(53, "S2", "dm:minjae", "민재", "너네 반 걔 맞지? 학교 제보 계정에 태그돼 있던데", { act: [PEOPLE.daejeon, "님이 회원님을 릴스에 태그했습니다."] }),
+  gate(58, "reel"),
   request(58, "S2", "moon-k", "너가 그 ○○중 2-3 걔임?", true, { act: ["jimin-2-3", "님 외 22명이 회원님이 태그된 릴스를 좋아합니다."] }),
   share(62, "R", "dm:jiwon", "지원", "추천에 떠서 봤어. 이거 너 아니지?"),
   share(68, "S3", "dm:yuna", "유나", "학원 애들 다 봄. 브이로그 목소리랑 완전 똑같던데", { act: ["dream-09", "님이 회원님의 게시물에 댓글을 남겼습니다: 브이로그 목소리랑 완전 똑같네", "post"] }),
@@ -39,15 +46,17 @@ export const buildPhase1 = () => [
   share(80, "S3", "dm:hajun", "하준", "3학년 단톡에도 퍼지고 있어. 교문 보니까 너네 학교 맞네", { act: ["moon-k", "님이 회원님이 태그된 릴스에 댓글을 남겼습니다: 스티커로 가려도 후드 보면 딱 앎"] }),
   request(86, "S2", "hot-clip", "수아 협박한 애 계정 여기 맞음?ㅋㅋ", true, { act: ["hot-clip", "님이 회원님을 언급했습니다: 수아 협박한 애 계정 여기임"] }),
   request(92, "S2", "seojun-b", "다른 학교인데 우리 반 단톡에도 올라옴"),
-  n(98, "S1", "feed", "2-3 우리반", "도윤: 왜 아무 말도 안 함? 진짜인가 보네", { to: "dm-group", room: "dm-group", msg: { who: "도윤", text: "왜 아무 말도 안 함? 진짜인가 보네" }, deniedBody: "도윤: 해명 끝? 증거는 없고?", deniedMsg: { who: "도윤", text: "해명 끝? 증거는 없고?" } }),
+  n(98, "S1", "feed", "2-3 우리반", "도윤: 해명 끝? 증거는 없고?", { to: "dm-group", room: "dm-group", msg: { who: "도윤", text: "해명 끝? 증거는 없고?" } }),
   // 수아 herself closes act 2, still inside 피드.
   n(100, "S4", "feed", "수아", "나한테 왜 그랬어?", { to: "dm:sua", room: "dm:sua", msg: { who: "수아", text: "나한테 왜 그랬어?" } }),
   line(101, "dm:sua", "수아", "나 내일 학교 못 가겠어"),
+  gate(104, "reply", "dm:sua"),
   n(104, "S4", "voice", "보이스팝", "회원님의 AI 목소리로 만든 영상이 34개가 되었어요", { to: "" }),
   n(108, "R", "feed", "피드", "신고하신 릴스는 검토 중입니다", { to: "reels", unreported: "회원님이 태그된 릴스 조회수 1만 회" }),
   // Act 3, the adults: a 톡 banner carries the player from 피드 to 톡 (#19-27).
   n(112, "S1", "talk", "담임 선생님", `${ME}, 학교폭력 신고가 들어왔다.`, { to: "talk:teacher", room: "talk:teacher", msg: { who: "담임 선생님", text: `${ME}, 학교폭력 신고가 들어왔다.` } }),
   line(113, "talk:teacher", "담임 선생님", "내일 아침 8시까지 교무실로 와라."),
+  gate(118, "read", "talk:teacher"),
   n(118, "S1", "phone", "전화", "엄마 부재중 전화", { to: "phone" }),
   n(123, "S1", "talk", "엄마", "수아 엄마가 학부모 단톡방에 영상을 올렸대", { to: "talk:mom", room: "talk:mom", msg: { who: "엄마", text: "수아 엄마가 학부모 단톡방에 영상을 올렸대" } }),
   line(124, "talk:mom", "엄마", "이게 무슨 일이니"),
@@ -56,6 +65,7 @@ export const buildPhase1 = () => [
   n(135, "S4", "talk", "채원", "우리 학원 단톡에도 올라왔어", { to: "talk:chaewon", room: "talk:chaewon", msg: { who: "채원", text: "우리 학원 단톡에도 올라왔어" } }),
   line(136, "talk:chaewon", "채원", "다들 니 목소리 맞대"),
   request(141, "S2", "낯선 계정", "프로필에 ○○중 2-3 써 놨네", false),
+  gate(148, "read", "talk:mom"),
   n(148, "S1", "talk", "엄마", "학교에서 문자 왔어", { to: "talk:mom", room: "talk:mom", msg: { who: "엄마", text: "학교에서 문자 왔어" } }),
   { t: 149, type: "line", room: "talk:mom", msg: { who: "엄마", text: SCHOOL_NOTICE(), preview: "[○○중] 학교폭력 사안 접수 안내", notice: true } },
   n(158, "S1", "feed", "2-3 우리반", "지민님이 회원님을 내보냈습니다", { to: "dm-group", kick: true }),

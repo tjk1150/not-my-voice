@@ -58,7 +58,7 @@ export function dmInbox(state) {
     <section class="dm-list">${inboxRows(state)
       .slice(0, 9)
       .map(
-        (row) => `<div class="dm-row ${row.unread ? "unread" : ""} ${row.unread && state.t - row.at < 1.2 ? "arrive" : ""}" ${row.id ? `data-go="room-${row.id}"` : ""}>
+        (row) => `<div class="dm-row ${row.unread ? "unread" : ""} ${row.unread && state.now - row.at < 1.2 ? "arrive" : ""}" ${row.id ? `data-go="room-${row.id}"` : ""}>
           ${row.group ? groupAv() : row.request ? avatar(56, ic("user-round", 30, 2), "#c7ccd4") : row.ring ? ringAv(row.name, 56) : face(row.name, 56)}
           <div class="txt"><div class="name">${row.name}</div><div class="sub">${row.sub}</div></div>${row.reel ? `<span class="thumb" style="background-image:url(${REEL_THUMB})"></span>` : ""}${row.unread ? '<i class="udot"></i>' : ""}</div>`
       )

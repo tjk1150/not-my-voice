@@ -16,6 +16,8 @@ export const TAP_TO_VIEW = { "app-feed": "dm-inbox", "app-talk": "talk-list", "a
 export const BANNER_ROOMS = ["dm:harin", "dm:minjae", "dm:sua", "talk:teacher"];
 // 톡 rooms the player is led into, in order. 학원 선생님 and 채원 only pile up in the chat list.
 export const TALK_ORDER = ["talk:teacher", "talk:mom"];
+// Gates: how long (real seconds) a room stays quiet before the story moves on past it.
+export const GATE_QUIET = 1.5;
 
 // Pause between classmates' lines in the group call.
 export const CALL_GAP_MS = 180;

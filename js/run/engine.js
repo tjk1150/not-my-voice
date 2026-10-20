@@ -1,9 +1,12 @@
-// Phase 1 runtime: real time drives the game clock (15 s = 1 game minute), notifications,
-// room scripts, the bullies' group call and the storm. The player only taps; the next target blinks.
+// Phase 1 runtime: two clocks. The story clock (state.t) drives the game clock (15 s = 1 game minute),
+// notifications and the storm, and waits at each gate until the player has acted there. The real clock
+// (state.now) never waits: typing, replies arriving, the ringing call and banners run on it.
+// The player only taps; the next target blinks.
 import { buildPhase1, STORM, SECONDS_PER_GAME_MINUTE } from "./timeline.js";
 import { ROOMS, SHARE_ROOMS, REPLIES, groupScript, STAYED_LINES, CALL_LINES, KICK_LINES } from "./rooms.js";
 import { runPrologue } from "./prologue.js";
 import { runRewind } from "./rewind.js";
+import { gatePassed, gateRoom, quiet } from "./gates.js";
 import { playCall } from "./call-audio.js";
 import { sfx } from "./sfx.js";
 import { bgm } from "./bgm.js";
@@ -24,7 +27,7 @@ function initialState() {
   }
   rooms["dm-group"].queue = groupScript();
   return {
-    events: buildPhase1(), t: 0, next: 0, fired: 0, view: "lock", locked: true, clock: "11:00", rooms, unread: {}, notifs: [], lockNotifs: [], banner: null,
+    events: buildPhase1(), t: 0, now: 0, skipGates: false, next: 0, fired: 0, view: "lock", locked: true, clock: "11:00", rooms, unread: {}, notifs: [], lockNotifs: [], banner: null,
     activity: [], activityFresh: false, flags: { requests: [], follow: 0 }, reel: { likes: 23, shares: 3 }, commentsShown: 0, commentsFresh: false,
     reported: false, replied: {}, pending: [], kicked: false, call: { state: "none" }, storm: { on: false, count: 0, frozen: false }, seen: new Set(["lock"]), guide: null,
   };
@@ -130,7 +133,7 @@ export function start(root, params) {
     const { view, t, seen, unread, rooms } = state;
     const groupDone = rooms["dm-group"].started && !rooms["dm-group"].queue.length && !rooms["dm-group"].typing;
     // "Back" waits until a room has gone quiet, so a reply or a burst of messages is read before leaving.
-    const settled = (id) => t - rooms[id].updated >= 2 && !state.pending.some((item) => item.room === id);
+    const settled = (id) => quiet(state, id, 2);
     if (state.storm.on) return null;
     if (state.call.state === "ringing") return "accept";
     // Three tries to explain (class room, 하린, 수아): the first reply chip blinks, and a banner waits
@@ -138,6 +141,10 @@ export function start(root, params) {
     if (V.canReply(state, view)) return "reply-0";
     if (state.pending.some((item) => item.room === view)) return null;
     if (state.banner && BANNER_ROOMS.includes(state.banner.item.to) && !seen.has(state.banner.item.to)) return "banner";
+    // A story waiting at a gate leads the player back to the room the gate needs, from anywhere.
+    const waiting = blockingGate();
+    const room = waiting && gateRoom(waiting);
+    if (room && view !== room) return routeTo(room);
     // The lock screen leads into the class room, whatever else has piled on top of its card.
     if (view === "lock") { const index = state.lockNotifs.findIndex((item) => item.to === "dm-group"); return index >= 0 ? `notif-${index}` : null; }
     // Three acts: the class room and the reel (act 1), the reel arriving again and again (act 2),
@@ -175,6 +182,24 @@ export function start(root, params) {
     return null;
   }
 
+  // The gate the story clock is held at, if any.
+  function blockingGate() {
+    const ev = state.events[state.next];
+    return ev && ev.type === "gate" && ev.t <= state.t && !gatePassed(state, ev) ? ev : null;
+  }
+
+  // One tap toward a room: out of whatever is open, through home and the right app, into the room.
+  function routeTo(room) {
+    const { view } = state;
+    const talk = room.startsWith("talk:");
+    if (view === "lock") { const index = state.lockNotifs.findIndex((item) => item.to === room); return `notif-${Math.max(0, index)}`; }
+    if (view === "home") return talk ? "app-talk" : "app-feed";
+    if (view === "dm-inbox") return talk ? "home" : `room-${room}`;
+    if (view === "talk-list") return talk ? `room-${room}` : "home";
+    const out = { reels: "close-reel", phone: "back-app", audio: "close-audio", comments: "close-comments", more: "close-sheet", report: "close-report", "report-done": "done", activity: "tab-dm" };
+    return out[view] || "back";
+  }
+
   function applyGuide(force = false) {
     const next = guideFor();
     if (!force && next === state.guide) return;
@@ -197,7 +222,7 @@ export function start(root, params) {
   }
 
   // A banner that leads into the next room stays up until that room is opened (or another replaces it).
-  const bannerUntil = (item) => (BANNER_ROOMS.includes(item.to) && !state.seen.has(item.to) ? Infinity : state.t + 3);
+  const bannerUntil = (item) => (BANNER_ROOMS.includes(item.to) && !state.seen.has(item.to) ? Infinity : state.now + 3);
 
   // A second or third message from the same person: the banner (or lock card) shows that message
   // and the alert sounds again, as on a real phone. These follow-ups are not part of the 47.
@@ -215,7 +240,7 @@ export function start(root, params) {
     const room = state.rooms[id];
     const entry = { ...line, time: ampm(state.clock) };
     room.fresh = true;
-    room.updated = state.t;
+    room.updated = state.now;
     room.time = ampm(state.clock);
     if (id === "dm-group" && (!room.started || room.queue.length || room.typing)) room.queue.push(entry);
     else { room.lines.push(entry); room.pop = true; chatSound(id, entry); }
@@ -227,7 +252,7 @@ export function start(root, params) {
     const room = state.rooms["dm-group"];
     lines.forEach((line) => room.queue.push({ ...line }));
     room.fresh = true;
-    room.updated = state.t;
+    room.updated = state.now;
     room.time = ampm(state.clock);
     if (state.view !== "dm-group") state.unread["dm-group"] = (state.unread["dm-group"] || 0) + lines.length;
   }
@@ -247,20 +272,14 @@ export function start(root, params) {
     if (ev.type === "notif") {
       let body = ev.unreported && !state.reported ? ev.unreported : ev.body;
       if (ev.nudge) {
-        // Answered already: no "read and ignored" jab, the room just moves on.
-        const lines = state.replied["dm-group"] ? STAYED_LINES.slice(1) : STAYED_LINES;
-        body = `${lines[0].who}: ${lines[0].text}`;
-        queueGroup(lines);
+        body = `${STAYED_LINES[0].who}: ${STAYED_LINES[0].text}`;
+        queueGroup(STAYED_LINES);
       }
       if (ev.kick) { state.kicked = true; queueGroup(KICK_LINES); }
-      // A line written for a player who already explained in the class room.
-      const explained = state.replied["dm-group"];
-      const msg = explained && ev.deniedMsg ? ev.deniedMsg : ev.msg;
-      if (explained && ev.deniedBody) body = ev.deniedBody;
       const item = { app: ev.app, title: ev.title, body, to: ev.to, opened: false };
       state.notifs.push(item);
       if (ev.share) { pushLine(ev.room, { who: ev.share.who, reel: true }); pushLine(ev.room, { who: ev.share.who, text: ev.share.text }); }
-      else if (ev.room) pushLine(ev.room, msg);
+      else if (ev.room) pushLine(ev.room, ev.msg);
       else if (ev.to === "dm-group" && state.view !== "dm-group") state.unread["dm-group"] = (state.unread["dm-group"] || 0) + 1;
       if (ev.act) { state.activity.unshift(ev.act); state.activityFresh = true; }
       if (ev.request) {
@@ -271,7 +290,7 @@ export function start(root, params) {
       if (ev.follow) state.flags.follow = ev.follow;
       present(item);
     } else if (ev.type === "line") { pushLine(ev.room, ev.msg); followUp(ev); }
-    else if (ev.type === "call") { state.call = { state: "ringing", start: state.t, buzz: state.t }; vibrate(); sfx.ring(); }
+    else if (ev.type === "call") { state.call = { state: "ringing", start: state.now, buzz: state.now }; vibrate(); sfx.ring(); }
     else if (ev.type === "storm") { state.storm.on = true; state.banner = null; }
     else if (ev.type === "freeze") {
       // A long frame can reach the freeze before the last storm card; finish the pile first.
@@ -287,45 +306,49 @@ export function start(root, params) {
   }
 
   function step(dt) {
+    state.now += dt;
+    const now = state.now;
+    const before = state.t;
     state.t += dt;
-    const t = state.t;
-    bgm.setIntensity(t / 170);
     let viewDirty = false;
     let overlayDirty = false;
+    // A gate not yet passed holds the story clock at its time; the events after it wait too.
+    while (state.events[state.next] && state.events[state.next].t <= state.t) {
+      const ev = state.events[state.next];
+      if (ev.type === "gate" && !state.skipGates && !gatePassed(state, ev)) { state.t = Math.max(before, ev.t); break; }
+      if (ev.type !== "gate") { fire(ev); viewDirty = true; overlayDirty = true; }
+      state.next += 1;
+    }
+    const t = state.t;
+    bgm.setIntensity(t / 170);
     const clock = clockAt(t);
     if (clock !== state.clock) { state.clock = clock; root.querySelectorAll(".screen:not(.lock) .sbar .time").forEach((el) => (el.textContent = clock)); const big = root.querySelector(".lock .clock"); if (big) big.textContent = clock; }
-    while (state.events[state.next] && state.events[state.next].t <= t) {
-      fire(state.events[state.next]);
-      state.next += 1;
-      viewDirty = true;
-      overlayDirty = true;
-    }
     // Answers to a reply chip outside the class room arrive one by one.
-    while (state.pending.length && state.pending[0].at <= t) {
+    while (state.pending.length && state.pending[0].at <= now) {
       const { room, line } = state.pending.shift();
       pushLine(room, line);
       if (state.view === room) viewDirty = true;
     }
     const group = state.rooms["dm-group"];
-    if (group.started && (group.queue.length || group.typing) && t >= group.nextAt) {
+    if (group.started && (group.queue.length || group.typing) && now >= group.nextAt) {
       const item = group.queue[0];
-      if (item && item.who && item.who !== "me" && !group.typing) { group.typing = item.who; group.nextAt = t + 0.5; }
-      else if (item) { group.typing = null; group.lines.push(group.queue.shift()); group.pop = true; group.nextAt = t + (item.who ? 0.35 : 0.3); chatSound("dm-group", item); }
+      if (item && item.who && item.who !== "me" && !group.typing) { group.typing = item.who; group.nextAt = now + 0.5; }
+      else if (item) { group.typing = null; group.lines.push(group.queue.shift()); group.pop = true; group.updated = now; group.nextAt = now + (item.who ? 0.35 : 0.3); chatSound("dm-group", item); }
       else group.typing = null;
       if (state.view === "dm-group") viewDirty = true;
     }
     const call = state.call;
     if (call.state === "ringing") {
-      if (t - call.buzz > 1.2) { call.buzz = t; vibrate(); sfx.ring(); }
-      if (t - call.start > 12) { call.state = "gone"; queueGroup(CALL_LINES.missed); overlayDirty = viewDirty = true; }
+      if (now - call.buzz > 1.2) { call.buzz = now; vibrate(); sfx.ring(); }
+      if (now - call.start > 12) { call.state = "gone"; queueGroup(CALL_LINES.missed); overlayDirty = viewDirty = true; }
     } else if (call.state === "active") {
-      call.elapsed = t - call.start;
+      call.elapsed = now - call.start;
       const beat = Math.floor(call.elapsed * 2.5);
       if (beat !== call.beat) { call.beat = beat; overlayDirty = true; }
       // With voices the call lasts as long as the lines; without them (or if blocked) 5 seconds.
       const over = call.audio === "done" || (call.audio === "none" && call.elapsed > 5) || call.elapsed > 25;
-      if (over) { call.stop?.(); call.state = "ended"; call.endAt = t; call.speaker = null; overlayDirty = true; }
-    } else if (call.state === "ended" && t - call.endAt > 1.2) {
+      if (over) { call.stop?.(); call.state = "ended"; call.endAt = now; call.speaker = null; overlayDirty = true; }
+    } else if (call.state === "ended" && now - call.endAt > 1.2) {
       call.state = "gone";
       queueGroup([{ sys: `음성 통화 종료 · 0:${String(Math.round(call.endAt - call.start)).padStart(2, "0")}` }, ...CALL_LINES.answered]);
       overlayDirty = viewDirty = true;
@@ -334,7 +357,7 @@ export function start(root, params) {
       const shown = V.commentCount(t);
       if (shown !== state.commentsShown) { state.commentsShown = shown; state.commentsFresh = true; viewDirty = true; }
     }
-    if (state.banner && t > state.banner.until) { state.banner = null; overlayDirty = true; }
+    if (state.banner && now > state.banner.until) { state.banner = null; overlayDirty = true; }
     if (state.storm.on && !state.storm.frozen) {
       const count = Math.min(STORM.length, Math.floor((t - 170) / 0.25) + 1);
       if (count !== state.storm.count) { state.storm.count = count; state.fired = 27 + count; vibrate(); sfx.notify(STORM[count - 1][0]); overlayDirty = true; }
@@ -365,7 +388,7 @@ export function start(root, params) {
     state.notifs.forEach((item) => { if (item.to === view) item.opened = true; });
     state.unread[view] = 0;
     const room = state.rooms[view];
-    if (view === "dm-group" && !room.started) { room.started = true; room.nextAt = state.t + 0.4; }
+    if (view === "dm-group" && !room.started) { room.started = true; room.nextAt = state.now + 0.4; }
     renderView();
   }
 
@@ -404,7 +427,7 @@ export function start(root, params) {
       if (id === "dm-group") queueGroup([sent, ...reply.answers]);
       else {
         pushLine(id, sent);
-        state.pending = [...state.pending, ...reply.answers.map((line, index) => ({ at: state.t + 1.2 * (index + 1), room: id, line }))];
+        state.pending = [...state.pending, ...reply.answers.map((line, index) => ({ at: state.now + 1.2 * (index + 1), room: id, line }))];
       }
       return renderView();
     }
@@ -419,7 +442,7 @@ export function start(root, params) {
     if (key === "close-reel") return navigate(state.reelFrom || "dm-inbox");
     if (key === "back-app") return navigate(state.backTo || "home");
     if (key === "accept") {
-      const call = { state: "active", start: state.t, beat: 0, elapsed: 0, speaker: null, audio: "playing" };
+      const call = { state: "active", start: state.now, beat: 0, elapsed: 0, speaker: null, audio: "playing" };
       call.stop = playCall({ onSpeaker: (who) => { call.speaker = who; renderOverlay(); }, onEnd: (ok) => { call.audio = ok ? "done" : "none"; } });
       state.call = call;
       return renderOverlay();
@@ -470,6 +493,7 @@ export function start(root, params) {
   }
   if (params.has("phase2")) {
     root.querySelector(".startcard")?.remove();
+    state.skipGates = true;
     for (let i = 0; i < 1760; i += 1) step(0.1);
     renderView();
     renderOverlay();
@@ -477,7 +501,8 @@ export function start(root, params) {
     return;
   }
   const jump = Math.min(180, Math.max(0, Number(params.get("t")) || 0));
-  if (jump > 0) { for (let i = 0; i < jump * 10; i += 1) step(0.1); }
+  // A jump start (?t=) passes the gates on the way, then plays them normally.
+  if (jump > 0) { state.skipGates = true; for (let i = 0; i < jump * 10; i += 1) step(0.1); state.skipGates = false; }
   renderView();
   renderOverlay();
 }
