@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>공유 미리보기 이미지</title>
+  <!-- Renders img/og.png (1200 x 630) from the title screen's own copy and notification cards.
+       Regenerate: serve the folder, then run Chrome headless on this page (see README). -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/ios.css">
+  <link rel="stylesheet" href="../css/chat.css">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <style>
+    html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: #000; }
+    .og { position: relative; width: 1200px; height: 630px; display: flex; align-items: center; gap: 56px; padding: 0 80px; box-sizing: border-box; color: #fff; font-family: Pretendard, sans-serif; }
+    .copy { flex: 1; min-width: 0; }
+    .copy .kicker { font-size: 22px; font-weight: 600; color: rgba(255, 255, 255, .5); }
+    .copy p { margin: 28px 0 0; font-size: 30px; line-height: 44px; color: rgba(255, 255, 255, .78); word-break: keep-all; }
+    .copy h1 { margin: 20px 0 0; font-size: 68px; line-height: 80px; font-weight: 800; letter-spacing: -1px; word-break: keep-all; }
+    .cards { width: 420px; flex: none; display: flex; flex-direction: column; gap: 12px; zoom: 1.15; }
+    .cards .tease-card { opacity: 1; animation: none; }
+  </style>
+</head>
+<body>
+  <div class="og">
+    <div class="copy"><div class="kicker" id="kicker"></div><p id="hook"></p><h1 id="title"></h1></div>
+    <div class="cards" id="cards"></div>
+  </div>
+  <script type="module">
+    import { TITLE } from "../js/data.js";
+    import { card } from "../js/ios-screens.js";
+
+    document.getElementById("kicker").textContent = "중학생 AI 윤리 체험 · 약 15분";
+    document.getElementById("hook").innerHTML = TITLE.hook;
+    document.getElementById("title").textContent = TITLE.title;
+    document.getElementById("cards").innerHTML = TITLE.teaser.map((item) => `<div class="tease-card">${card(item)}</div>`).join("");
+    window.lucide?.createIcons();
+    document.fonts.ready.then(() => document.body.setAttribute("data-ready", ""));
+  </script>
+</body>
+</html>

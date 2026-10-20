@@ -45,6 +45,14 @@ python3 serve.py .
 
 브라우저에서 `http://127.0.0.1:8765/?run`을 연다.
 
+## 공유 미리보기 이미지
+
+링크를 공유할 때 보이는 `img/og.png`(1200×630)는 `tools/og-image.html`이 첫 화면의 문구와 알림 카드로 그린다. 첫 화면 문구를 바꾸면 개발 서버를 켠 채로 다시 찍는다. 홈 화면 아이콘 `img/apple-touch-icon.png`는 `tools/touch-icon.html`로 같은 방법으로 찍는다.
+
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 --virtual-time-budget=6000 --screenshot=img/og.png http://127.0.0.1:8765/tools/og-image.html
+```
+
 ## 그룹 통화 음성 (선택)
 
 `tools/make-call-audio.mjs`가 ElevenLabs로 통화 대사를 `audio/`에 만든다. 키와 목소리 ID는 환경 변수로 넣는다. 목소리는 합성으로 설계한 가상의 10대 목소리만 쓰고, 실제 학생의 목소리를 복제하지 않는다. 파일이 없으면 통화는 소리 없이 진행된다.
