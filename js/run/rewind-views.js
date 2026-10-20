@@ -109,7 +109,7 @@ export const privacyAt = (clock, stage) => {
   return privacy(false).replace('<span class="toggle blink"></span>', '<span class="toggle on"></span>').replace("4:20", clock);
 };
 
-// Ending: what the player changed, and the question (with its answer line) over the remaining cards. Cards flip in place
+// Ending: the drop, what the player changed, and the question (with its answer line) over the remaining cards. Cards flip in place
 // (rewind.js toggles their class), and the closing part is added once all five are turned.
 export function ending(items, flipped = [], { intro = false, done = false } = {}) {
   const next = items.findIndex((_, index) => !flipped.includes(index));
@@ -122,6 +122,7 @@ export function ending(items, flipped = [], { intro = false, done = false } = {}
     .join("");
   return `
   <div class="screen end ${intro ? "e-intro" : ""}">
+    <section class="e-sec rise"><h2 class="e-q">${END.head}</h2></section>
     <section class="e-sec rise"><h3 class="e-label">${END.changed}</h3><ul class="e-checks">${CHANGED.map((text) => `<li>${ic("circle-check", 18, 2.2)}${text}</li>`).join("")}</ul></section>
     <section class="e-sec rise"><h2 class="e-q">${END.question}</h2><p class="e-note">${END.note}</p><p class="e-tip">${END.tip}</p><div class="e-cards">${cards}</div></section>
     ${done ? endingTail() : ""}

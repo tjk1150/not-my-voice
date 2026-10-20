@@ -76,8 +76,9 @@ export const MOM_REPLY = "아직. 지금 신고할게";
 
 export const CHANGED = ["어른에게 알리고 신고하기", "프로필에서 학교와 반 지우기", "브이로그 계정 비공개로 바꾸기", "앱의 선택 동의 끄기"];
 
-// Ending copy: what the player changed, then the question over the five cards that remain.
+// Ending copy: the drop in one line, what the player changed, then the question over the five cards that remain.
 export const END = {
+  head: "나를 가해자로 몰던 알림이 47개에서 5개로 줄었어요.",
   changed: "내가 바꾼 것",
   question: "누구의 책임일까요?",
   tip: "남은 알림을 하나씩 눌러 보세요",
