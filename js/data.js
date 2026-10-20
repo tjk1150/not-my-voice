@@ -92,9 +92,9 @@ export const PHOTOS = {
 // A teaser: three notifications from the night drop onto a black screen one by one, then the hook.
 export const TITLE = {
   teaser: [
-    { app: "feed", title: "2-3 우리반", body: "지민: 이거 너야?", when: "오후 11:00" },
-    { app: "feed", title: "피드", body: "회원님이 태그된 릴스 조회수 1만 회", when: "오후 11:06" },
-    { app: "talk", title: "담임 선생님", body: "학교폭력 신고가 들어왔다.", when: "오후 11:07" },
+    { app: "feed", title: "수아", body: "나한테 왜 그랬어?", when: "오후 11:06" },
+    { app: "feed", title: "하준", body: "3학년 단톡에도 돌아", when: "오후 11:06" },
+    { app: "feed", title: "수아", body: "나 내일 학교 못 가겠어", when: "오후 11:07" },
   ],
   hook: "분명 내 목소리인데,<br>나는 그런 말을 한 적이 없다.",
   title: "내가 하지 않은 말",
