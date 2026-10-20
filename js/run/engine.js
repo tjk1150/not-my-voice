@@ -153,7 +153,7 @@ export function start(root, params) {
     }
     if (view === "dm-group") {
       if (rooms["dm-group"].lines.some((line) => line.reel) && !seen.has("reels")) return "reel-open";
-      return groupDone && (t >= 50 || state.kicked) ? "back" : null;
+      return groupDone && (t >= 38 || state.kicked) ? "back" : null;
     }
     // Act 2 only shows the spread: open the shared reel once, see the numbers, go back. Reporting is
     // left for the rewind (stop 1), so nothing here leads to it.

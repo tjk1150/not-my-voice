@@ -20,7 +20,7 @@ export const groupScript = () => [
   say("지민", "수아 나갔다. 어떡할 거야"),
 ];
 
-// The class room keeps going at 0:47 (a player who has not answered also gets "읽씹 실화?").
+// The class room keeps going at 0:33 (a player who has not answered also gets "읽씹 실화?").
 export const STAYED_LINES = [say("지민", "읽씹 실화?"), say("서연", "수아한테 사과는 해야지"), say("지민", "제보 계정에도 올라왔더라ㅋㅋ 다른 학교 애들도 봄")];
 
 // The player tries to explain three times, by picking a reply chip, and each try fails differently:
@@ -32,7 +32,7 @@ export const REPLIES = {
     answers: [say("도윤", "AI 핑계 대는 거 봐ㅋㅋ"), say("서연", "그럼 증거 있어?"), say("현우", "녹음이 거짓말하냐?"), say("지민", "인사도 브이로그랑 똑같던데")],
   },
   "dm:harin": {
-    after: 52,
+    after: 40,
     chips: ["진짜 나 아니야. 믿어 줘"],
     answers: [say("하린", "근데 목소리가 너잖아…"), say("하린", "나도 모르겠어")],
   },
@@ -66,8 +66,8 @@ export const CALLERS = ["지민", "도윤", "서연", "현우"];
 
 export const ROOMS = {
   "dm-group": { app: "feed", name: "2-3 우리반", sub: "멤버 28명", group: true, history: [] },
-  "dm:harin": { app: "feed", name: "하린", sub: "harin-0412", history: [{ day: "오늘 오후 3:12" }, say("me", "체육복 내일 꼭 가져와"), say("하린", "ㅇㅋㅇㅋ"), { day: "오후 11:03" }] },
-  "dm:yerin": { app: "feed", name: "예린", sub: "yerin-2-4", history: [{ day: "어제 오후 8:40" }, say("예린", "수행평가 몇 쪽까지야?"), say("me", "48쪽"), { day: "오후 11:02" }] },
+  "dm:harin": { app: "feed", name: "하린", sub: "harin-0412", history: [{ day: "오늘 오후 3:12" }, say("me", "체육복 내일 꼭 가져와"), say("하린", "ㅇㅋㅇㅋ"), { day: "오후 11:02" }] },
+  "dm:yerin": { app: "feed", name: "예린", sub: "yerin-2-4", history: [{ day: "어제 오후 8:40" }, say("예린", "수행평가 몇 쪽까지야?"), say("me", "48쪽"), { day: "오후 11:01" }] },
   "dm:sua": { app: "feed", name: "수아", sub: "sua-n_n", history: [{ day: "10월 17일 (토) 오후 5:21" }, say("수아", "월요일에 같이 매점 가자"), say("me", "ㅇㅋ 4교시 끝나고"), { day: "오후 11:06" }] },
   // Act 2: the same reel sent to me by people farther and farther from my class (see SHARE_ROOMS).
   "dm:minjae": { app: "feed", name: "민재", sub: "minjae-2-1", history: [{ day: "9월 30일 (화) 오후 4:02" }, say("민재", "체육대회 반티 사진 보내 줘"), say("me", "ㅇㅇ"), { day: "오후 11:03" }] },
