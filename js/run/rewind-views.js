@@ -109,7 +109,7 @@ export const privacyAt = (clock, stage) => {
   return privacy(false).replace('<span class="toggle blink"></span>', '<span class="toggle on"></span>').replace("4:20", clock);
 };
 
-// Ending: the drop, what changed, and the question over the remaining cards. Cards flip in place
+// Ending: the drop, what changed, and the question (with its answer line) over the remaining cards. Cards flip in place
 // (rewind.js toggles their class), and the closing part is added once all five are turned.
 export function ending(items, flipped = [], { intro = false, done = false } = {}) {
   const next = items.findIndex((_, index) => !flipped.includes(index));
@@ -124,12 +124,12 @@ export function ending(items, flipped = [], { intro = false, done = false } = {}
   <div class="screen end ${intro ? "e-intro" : ""}">
     <section class="e-head rise"><div class="e-big">47 → <b>5</b></div><p class="e-sub">${END.sub}</p></section>
     <section class="e-sec rise"><h3 class="e-label">${END.changed}</h3><ul class="e-checks">${CHANGED.map((text) => `<li>${ic("circle-check", 18, 2.2)}${text}</li>`).join("")}</ul></section>
-    <section class="e-sec rise"><h2 class="e-q">${END.question}</h2><p class="e-tip">${END.tip}</p><div class="e-cards">${cards}</div></section>
+    <section class="e-sec rise"><h2 class="e-q">${END.question}</h2><p class="e-note">${END.note}</p><p class="e-tip">${END.tip}</p><div class="e-cards">${cards}</div></section>
     ${done ? endingTail() : ""}
   </div>`;
 }
 
-export const endingTail = () => `<section class="e-sec e-tail"><p class="e-note">${END.note}</p>
+export const endingTail = () => `<section class="e-sec e-tail">
   <button class="e-help-btn" data-r="help">${ic("life-buoy", 18, 2)} 도움받을 수 있는 곳 ${ic("chevron-right", 18, 2)}</button>
   <div class="e-btns"><button class="line" data-r="restart">처음부터 다시 하기</button>${SURVEY.url ? `<a class="main" href="${SURVEY.url}" target="_blank" rel="noopener">${ic("clipboard-list", 18, 2.2)} ${SURVEY.label}</a>` : ""}</div></section>`;
 

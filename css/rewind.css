@@ -78,7 +78,7 @@
 .vu-row span { flex: 1; } .vu-row em { font-style: normal; color: var(--ink-2); font-size: 14px; } .vu-row > svg:last-child { color: #a0a6ae; }
 
 /* New night and ending */
-/* Ending spacing: 24 side margins, 32 between sections, 12 from a label to its content, 8 between cards */
+/* Ending spacing: 24 side margins, 32 between sections, 12 from a label to its content, 8 between cards and lines */
 .screen.end { background: #fff; overflow-y: auto; scrollbar-width: none; padding: 72px 24px 48px; word-break: keep-all; }
 .e-big { font-size: 44px; line-height: 52px; font-weight: 800; letter-spacing: -1px; color: #111; }
 .e-big b { color: #d0021b; }
@@ -89,10 +89,10 @@
 .e-checks li { display: flex; align-items: center; gap: 10px; font-size: 15px; line-height: 22px; color: #1d2433; }
 .e-checks svg { flex: none; color: #2e9e5b; }
 .e-q { font-size: 20px; line-height: 28px; font-weight: 800; color: #111; }
-.e-tip { margin-top: 4px; font-size: 14px; line-height: 20px; color: var(--ink-2); }
-.e-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; perspective: 900px; }
-.e-note { font-size: 15px; line-height: 23px; color: #3a3f47; }
-.e-help-btn { margin-top: 16px; width: 100%; height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border: 0; border-radius: 14px; background: #f0f2f5; color: var(--ink); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+.e-tip { margin-top: 16px; font-size: 14px; line-height: 20px; color: var(--ink-2); }
+.e-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; perspective: 900px; }
+.e-note { margin-top: 8px; font-size: 15px; line-height: 23px; color: #3a3f47; }
+.e-help-btn { margin-top: 0; width: 100%; height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border: 0; border-radius: 14px; background: #f0f2f5; color: var(--ink); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
 .e-btns { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
 .e-intro .rise { opacity: 0; animation: rise .5s ease-out forwards; }
 .e-intro .rise:nth-child(2) { animation-delay: .35s; } .e-intro .rise:nth-child(3) { animation-delay: .7s; }
