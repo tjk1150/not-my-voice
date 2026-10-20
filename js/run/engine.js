@@ -88,6 +88,7 @@ export function start(root, params) {
     else if (view === "report-done") html = V.reportDoneView(s);
     else if (view === "activity") html = V.activity(s);
     else if (view === "talk-list") html = V.talkList(s);
+    else if (view === "phone") html = V.phoneRecents(s);
     else html = V.talkRoom(s, view);
     const live = scr.querySelector(".live");
     const pinned = !live || live.scrollHeight - live.scrollTop - live.clientHeight < 40;
@@ -147,7 +148,7 @@ export function start(root, params) {
     if (view === "dm-inbox") {
       if (!seen.has("dm-group")) return "room-dm-group";
       for (const id of ["dm:sua", "dm:harin"]) if (unread[id]) return `room-${id}`;
-      if (!state.sharedReelSeen && rooms[SHARE_ROOMS[0]].fresh) return `room-${SHARE_ROOMS[0]}`;
+      if (!seen.has(SHARE_ROOMS[0]) && rooms[SHARE_ROOMS[0]].fresh) return `room-${SHARE_ROOMS[0]}`;
       return t >= 112 && !seen.has("talk:teacher") ? "home" : null;
     }
     if (view === "dm-group") {
@@ -159,6 +160,7 @@ export function start(root, params) {
     if (view === SHARE_ROOMS[0] && !state.sharedReelSeen) return "reel-open";
     if (view.startsWith("dm:")) return (REPLIES[view] && !state.replied[view]) || !settled(view) ? null : "back";
     if (view === "reels") return "close-reel";
+    if (view === "phone") return "back-app";
     if (view === "audio") return "close-audio";
     if (view === "comments") return V.commentCount(t) >= 9 ? "close-comments" : null;
     if (view === "more") return "report-go";
@@ -355,6 +357,8 @@ export function start(root, params) {
 
   function navigate(view) {
     if (!view) return;
+    // The phone app is reached from its notification; its status-bar link returns to the app before it.
+    if (view === "phone" && state.view !== "phone") state.backTo = state.locked ? "home" : state.view;
     state.locked = false;
     state.view = view;
     state.seen.add(view);
@@ -413,6 +417,7 @@ export function start(root, params) {
       return navigate("reels");
     }
     if (key === "close-reel") return navigate(state.reelFrom || "dm-inbox");
+    if (key === "back-app") return navigate(state.backTo || "home");
     if (key === "accept") {
       const call = { state: "active", start: state.t, beat: 0, elapsed: 0, speaker: null, audio: "playing" };
       call.stop = playCall({ onSpeaker: (who) => { call.speaker = who; renderOverlay(); }, onEnd: (ok) => { call.audio = ok ? "done" : "none"; } });

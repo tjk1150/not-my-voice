@@ -12,13 +12,14 @@ const brand = () => `<header class="vp-brand">${APP_ICONS.voice(28)}<b>${VOICE_A
 export const wave = (live = false) =>
   `<div class="vp-wave ${live ? "live" : ""}">${Array.from({ length: WAVE_BAR_COUNT }, (_, index) => `<i style="height:${8 + ((index * 37) % 29)}px;animation-delay:${(index % 7) * 0.09}s"></i>`).join("")}</div>`;
 
-// st: { clock, checked: boolean[], tappable, blinkItem, agreeBlink } ; tappable lets single items toggle (stop 4).
+// st: { clock, checked: boolean[], tappable, blinkOptional, agreeBlink } ; tappable lets single items toggle (stop 4),
+// blinkOptional makes every optional item that is still on blink.
 export function consentScreen(st) {
   const all = st.checked.every(Boolean);
   const ready = VOICE_APP.consents.every((item, index) => !item.req || st.checked[index]);
   const rows = VOICE_APP.consents
     .map(
-      (item, index) => `<li class="${st.blinkItem === index ? "blink" : ""}" ${st.tappable ? `data-r="c-${index}"` : ""}>${check(st.checked[index], 20)}
+      (item, index) => `<li class="${st.blinkOptional && !item.req && st.checked[index] ? "blink" : ""}" ${st.tappable ? `data-r="c-${index}"` : ""}>${check(st.checked[index], 20)}
         <div><span class="tag ${item.req ? "req" : ""}">${item.req ? "필수" : "선택"}</span> ${item.text}${item.note ? `<small>${item.note}</small>` : ""}</div>${ic("chevron-right", 18, 2)}</li>`
     )
     .join("");

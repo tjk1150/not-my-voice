@@ -69,7 +69,10 @@ export const REMAINING = [
 ];
 
 // The lesson card's button: back to an earlier stop, or (after the last stop) forward to the night itself.
-export const LESSON_BUTTON = { back: "계속 되감기", forward: "그날 밤으로 돌아가기" };
+export const LESSON_BUTTON = { back: "계속 되감기", forward: "바뀐 그날 밤 보기" };
+
+// Stop 1: the player's answer when mom asks whether the reel was reported.
+export const MOM_REPLY = "아직. 지금 신고할게";
 
 export const CHANGED = "알리기, 학교와 반 지우기, 공개 범위, 선택 동의";
 

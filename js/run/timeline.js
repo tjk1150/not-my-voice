@@ -46,7 +46,7 @@ export const buildPhase1 = () => [
   // Act 3, the adults: a 톡 banner carries the player from 피드 to 톡 (#19-27).
   n(112, "S1", "talk", "담임 선생님", `${ME}, 학교폭력 신고가 들어왔다.`, { to: "talk:teacher", room: "talk:teacher", msg: { who: "담임 선생님", text: `${ME}, 학교폭력 신고가 들어왔다.` } }),
   line(113, "talk:teacher", "담임 선생님", "내일 아침 8시까지 교무실로 와라."),
-  n(118, "S1", "phone", "전화", "엄마 부재중 전화", { to: "talk:mom" }),
+  n(118, "S1", "phone", "전화", "엄마 부재중 전화", { to: "phone" }),
   n(123, "S1", "talk", "엄마", "수아 엄마가 학부모 단톡방에 영상을 올렸대", { to: "talk:mom", room: "talk:mom", msg: { who: "엄마", text: "수아 엄마가 학부모 단톡방에 영상을 올렸대" } }),
   line(124, "talk:mom", "엄마", "이게 무슨 일이니"),
   line(125, "talk:mom", "엄마", "전화 받아"),

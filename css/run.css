@@ -96,3 +96,22 @@ html:has(.run-wrap), body:has(.run-wrap) { overscroll-behavior: none; }
 .dm-row.arrive { animation: arrive 1.1s ease-out; }
 @keyframes arrive { from { background: #e6e9ff; } to { background: transparent; } }
 .no-motion .dm-row.arrive { animation: none; }
+
+/* A new sender in a 1:1 room (or me after someone else) starts a little lower, as in the app */
+.m.turn { margin-top: 12px; }
+
+/* Phone app: recent calls */
+.ph-app { background: #fff; }
+.ph-app .crumb { position: absolute; left: 22px; top: 40px; display: flex; align-items: center; gap: 1px; font-size: 12px; font-weight: 600; color: var(--blue); cursor: pointer; z-index: 3; }
+.ph-seg { position: absolute; left: 50%; top: 66px; transform: translateX(-50%); display: flex; padding: 2px; border-radius: 9px; background: #eeeef0; font-size: 13px; font-weight: 600; }
+.ph-seg span { padding: 5px 18px; border-radius: 7px; } .ph-seg .on { background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
+.ph-title { position: absolute; left: 20px; top: 104px; margin: 0; font-size: 32px; font-weight: 800; }
+.ph-list { position: absolute; left: 20px; right: 0; top: 160px; }
+.ph-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px 0; border-bottom: 1px solid #e5e5ea; }
+.ph-row > div { flex: 1; } .ph-row b { display: block; font-size: 17px; font-weight: 600; } .ph-row b.missed { color: #ff3b30; }
+.ph-row span { font-size: 14px; color: var(--ink-2); } .ph-row em { font-style: normal; font-size: 15px; color: var(--ink-2); } .ph-row svg { color: var(--blue); }
+
+/* An element that blinks and also has an entry animation keeps both (one animation property would win) */
+.run-banner.blink { animation: drop .32s cubic-bezier(.2, .9, .3, 1.2), blink 1s ease-in-out .32s infinite; }
+.lock .notifs > .drop.blink { animation: drop .32s cubic-bezier(.2, .9, .3, 1.2), blink 1s ease-in-out .32s infinite; }
+.dm-row.arrive.blink { animation: arrive 1.1s ease-out, blink 1s ease-in-out infinite; }

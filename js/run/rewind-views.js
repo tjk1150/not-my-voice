@@ -50,7 +50,7 @@ export function shareSheet(clock) {
   );
 }
 
-export function momRoom(clock, lines, blinkBack = false) {
+export function momRoom(clock, lines, { blinkBack = false, reply = "" } = {}) {
   const history = [msg("엄마", "학원 끝나면 바로 와", { first: true, time: "오후 3:07" }), msg("me", "응", { time: "오후 3:10" })];
   const body = lines.map((line, index) => `<div class="${index === lines.length - 1 ? "pop" : ""}">${line.typing ? `<div class="k-m first">${face("엄마", 34, "sq")}<div class="col"><div class="line"><div class="k-bub typing"><i></i><i></i><i></i></div></div></div></div>` : msg(line.who, line.text, { first: line.first, time: line.time || "" })}</div>`).join("");
   return `
@@ -58,6 +58,7 @@ export function momRoom(clock, lines, blinkBack = false) {
     ${statusBar(clock, "light")}
     <header class="k-rhead"><span class="pill glass dark ${blinkBack ? "blink" : ""}" data-r="back">${ic("chevron-left", 26, 2)}</span><span class="ttl">엄마</span><span class="pill r glass dark">${ic("search", 24, 2)}${ic("menu", 24, 2)}</span></header>
     <section class="k-msgs live"><span class="k-date">2026년 10월 19일 월요일</span>${history.join("")}${body}</section>
+    ${reply ? `<div class="replies"><span class="reply-chip blink" data-r="reply">${reply}</span></div>` : ""}
     <div class="k-input">${ic("plus", 26, 2)}<span class="ph">메시지 입력</span><span class="c">${ic("smile", 20, 2)}</span><span class="c">${ic("hash", 20, 2)}</span><span class="c">${ic("audio-lines", 20, 2)}</span></div>
     <i class="home-ind light"></i>
   </div>`;
@@ -65,6 +66,8 @@ export function momRoom(clock, lines, blinkBack = false) {
 
 export const shotBubble = () => `<img class="k-shot" src="${VLOG_IMG}" alt="스크린샷">`;
 
+// Back on the reel after mom's question: its "…" menu is where reporting starts.
+export const reelMore = (clock) => reels().replace('<span class="a blink"', '<span class="a blink" data-r="more"').replace("11:04", clock);
 export const moreAt = (clock) => moreSheet().replace('<div class="row red blink">', '<div class="row red blink" data-r="report">').replace('<span class="a blink"', '<span class="a"').replace("11:04", clock);
 export const reportAt = (clock) => reportReasons().replace(/<div class="li ([^"]*)"><span>(합성[^<]*)<\/span>/, '<div class="li blink" data-r="fake"><span>$2</span>').replace("11:05", clock);
 export const reportDoneAt = (clock) => reportDone().replace('<div class="btn-main" style="top:748px">', '<div class="btn-main blink" style="top:748px" data-r="done">').replace("11:06", clock);
@@ -108,10 +111,11 @@ export const privacyAt = (clock, stage) => {
 
 // Ending.
 export function ending(items, flipped, showQuestion) {
+  const next = items.findIndex((_, index) => !flipped.includes(index));
   const cards = items
     .map((item, index) => {
       const src = REMAINING[index];
-      return `<div class="e-card ${flipped.includes(index) ? "flip" : "blink"}" data-r="card-${index}"><div class="e-front">${card(item, "light")}</div>
+      return `<div class="e-card ${flipped.includes(index) ? "flip" : index === next ? "blink" : ""}" data-r="card-${index}"><div class="e-front">${card(item, "light")}</div>
         <div class="e-back"><b>${src.who}</b><span>${src.why}</span><em>${src.req}</em></div></div>`;
     })
     .join("");

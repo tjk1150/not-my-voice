@@ -85,10 +85,10 @@
 .e-lines b { font-size: 22px; color: #d0021b; }
 .e-tip { margin-top: 18px; font-size: 13px; color: var(--ink-2); }
 .e-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; perspective: 900px; }
-.e-card { position: relative; height: 72px; cursor: pointer; border-radius: 18px; transform-style: preserve-3d; transition: transform .5s; }
+.e-card { position: relative; height: 84px; cursor: pointer; border-radius: 18px; transform-style: preserve-3d; transition: transform .5s; }
 .e-card.flip { transform: rotateX(180deg); }
 .e-front, .e-back { position: absolute; inset: 0; backface-visibility: hidden; }
-.e-front .ncard { position: static; margin: 0; background: #f0f2f5; }
+.e-front .ncard { position: static; margin: 0; height: 100%; box-sizing: border-box; background: #f0f2f5; }
 .e-back { transform: rotateX(180deg); border-radius: 18px; background: #1d2433; color: #fff; padding: 10px 14px; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; column-gap: 8px; align-content: center; }
 .e-back b { font-size: 15px; } .e-back span { grid-column: 1; font-size: 13px; line-height: 17px; opacity: .85; }
 .e-back em { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-style: normal; font-size: 12px; font-weight: 700; padding: 5px 8px; border-radius: 8px; background: #3442c9; white-space: nowrap; }
@@ -104,3 +104,4 @@
 .e-h { display: flex; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid #eef0f3; }
 .e-h b { display: block; font-size: 16px; } .e-h span { font-size: 13px; color: var(--ink-2); }
 .e-help button { width: 100%; margin-top: 16px; }
+.rw-thumb.blink { animation: pop .3s ease-out, blink 1s ease-in-out .3s infinite; }

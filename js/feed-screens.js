@@ -64,7 +64,7 @@ export const bubble = (who, text, opts = {}) => {
   const me = who === "me";
   const showAv = !me && opts.last;
   const name = !me && opts.first && opts.group ? `<span class="who">${who}</span>` : "";
-  const cls = [me ? "me" : "", opts.pos || ""].join(" ");
+  const cls = [me ? "me" : "", opts.pos || "", opts.first && !name ? "turn" : ""].join(" ");
   return `<div class="m ${cls}">${me ? "" : showAv ? face(who, 28) : '<span class="spacer"></span>'}
     <div class="col">${name}${opts.html || `<div class="bub">${text}</div>`}</div></div>`;
 };

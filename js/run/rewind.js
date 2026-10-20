@@ -9,7 +9,7 @@ import * as R from "./rewind-views.js";
 import { bgm } from "./bgm.js";
 import { lock } from "./views.js";
 import { wait, easeInOut, dayText, timeText, clockText } from "../utils.js";
-import { REMAINING, LESSON_BUTTON } from "./rewind-data.js";
+import { LESSON_BUTTON, MOM_REPLY } from "./rewind-data.js";
 
 
 export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
@@ -101,13 +101,19 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     await wait(900);
     show(R.momRoom(clock, [...lines, { typing: true }]));
     await wait(1300);
-    const replies = [{ who: "엄마", text: "알았어. 캡처 잘했다.", first: true }, { who: "엄마", text: "엄마가 지금 갈게. 담임 선생님께도 같이 말씀드리자" }, { who: "엄마", text: "영상은 신고해 둬", time: `오후 ${clock}` }];
+    // Mom asks about the report, so going back to the reel to report it is the player's own answer.
+    // Each line is rendered once (a re-render would replay its pop and look like a second message).
+    const replies = [{ who: "엄마", text: "알았어. 캡처 잘했다.", first: true }, { who: "엄마", text: "엄마가 지금 갈게. 담임 선생님께도 같이 말씀드리자" }, { who: "엄마", text: "그 영상 신고는 했어?", time: `오후 ${clock}` }];
     for (let index = 1; index <= replies.length; index += 1) {
-      show(R.momRoom(clock, [...lines, ...replies.slice(0, index)]));
-      await wait(700);
+      const last = index === replies.length;
+      show(R.momRoom(clock, [...lines, ...replies.slice(0, index)], { reply: last ? MOM_REPLY : "" }));
+      if (!last) await wait(700);
     }
-    show(R.momRoom(clock, [...lines, ...replies], true));
+    await tap("reply");
+    show(R.momRoom(clock, [...lines, ...replies, { who: "me", text: MOM_REPLY, time: `오후 ${clock}` }], { blinkBack: true }));
     await tap("back");
+    show(R.reelMore(clock));
+    await tap("more");
     show(R.moreAt(clock));
     await tap("report");
     show(R.reportAt(clock));
@@ -129,6 +135,7 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     }
     show(R.profileEdit(clock, { school: false, blinkDone: true }));
     await tap("done");
+    show(R.profileEdit(clock, { school: false }));
     await shatter(stop);
   }
 
@@ -154,7 +161,7 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
   }
 
   async function stopFour(stop) {
-    const st = { clock: clockText(stop.at), checked: VOICE_APP.consents.map(() => true), tappable: true, blinkItem: null, agreeBlink: false };
+    const st = { clock: clockText(stop.at), checked: VOICE_APP.consents.map(() => true), tappable: true, blinkOptional: true, agreeBlink: false };
     const optionalOn = () => VOICE_APP.consents.flatMap((item, index) => (!item.req && st.checked[index] ? [index] : []));
     await ask(stop, consentScreen(st));
     for (;;) {
@@ -163,25 +170,22 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
         // "전체 동의" here switches every optional item together; required ones stay on.
         const anyOptionalOn = VOICE_APP.consents.some((item, index) => !item.req && st.checked[index]);
         st.checked = VOICE_APP.consents.map((item) => item.req || !anyOptionalOn);
-        if (anyOptionalOn) st.blinkItem = null;
-        else toast("선택 동의가 다시 모두 켜졌어요.");
+        if (!anyOptionalOn) toast("선택 동의가 다시 모두 켜졌어요.");
       } else if (key === "agree") {
         // Every optional consent has to be off: the card asks for all the ones the app does not need.
         const stillOn = optionalOn();
         if (!stillOn.length) break;
-        st.blinkItem = stillOn[0];
         toast(`아직 켜져 있는 선택 동의가 ${stillOn.length}개 있어요. 앱을 쓰는 데 꼭 필요하지 않은 건 모두 꺼 보세요.`);
       } else {
         const index = Number(key.slice(2));
         if (VOICE_APP.consents[index].req) toast("필수 항목은 끌 수 없어요. 앱을 쓰려면 필요해요.");
         else st.checked = st.checked.map((on, item) => (item === index ? !on : on));
-        if (index === st.blinkItem && !st.checked[index]) st.blinkItem = optionalOn()[0] ?? null;
       }
       st.agreeBlink = !optionalOn().length;
       show(consentScreen(st));
     }
     show(doneScreen({ clock: st.clock, name: ME, song: Math.max(0, VOICE_APP.songs.indexOf(SONG)), shared: false }));
-    await wait(2400);
+    await wait(900);
     await shatter(stop);
   }
 

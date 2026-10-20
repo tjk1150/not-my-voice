@@ -232,3 +232,20 @@ export function callLayer(call) {
     <div class="c-people grid">${people}</div>
     <div class="c-btns"><span>${ic("mic-off", 26, 2)}</span><span>${ic("video-off", 26, 2)}</span><span>${ic("volume-2", 26, 2)}</span><span class="end">${ic("phone-off", 26, 2)}</span></div></div>`;
 }
+
+// The phone app's recent calls, opened from the missed-call notification. Like iOS, the status bar
+// carries a link back to the app the player came from.
+const APP_NAMES = { "talk-list": "톡", home: "홈" };
+export function phoneRecents(state) {
+  const back = state.backTo?.startsWith("talk") ? "톡" : state.backTo?.startsWith("dm") || state.backTo === "reels" ? "피드" : APP_NAMES[state.backTo] || "홈";
+  const row = (name, sub, time, missed = false) => `<div class="ph-row"><div><b class="${missed ? "missed" : ""}">${name}</b><span>${sub}</span></div><em>${time}</em>${ic("info", 22, 2)}</div>`;
+  return `
+  <div class="screen ph-app">
+    ${statusBar(state.clock)}
+    <span class="crumb" data-go="back-app">${ic("chevron-left", 13, 3)} ${back}</span>
+    <div class="ph-seg"><span class="on">전체</span><span>부재중</span></div>
+    <h1 class="ph-title">최근 기록</h1>
+    <div class="ph-list">${row("엄마", "휴대전화", `오후 ${state.clock}`, true)}${row("엄마", "휴대전화", "오후 6:12")}${row("하린", "휴대전화", "어제")}${row("수학 학원", "휴대전화", "10월 16일")}</div>
+    ${homeInd()}
+  </div>`;
+}
