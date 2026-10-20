@@ -73,7 +73,7 @@ export const STAGES = [
       ["privacy", "멈춤 3 · 계정 공개 범위", "비공개 전환.", feed.privacy],
       ["rw-stop4", "멈춤 4 · 선택 동의 끄기", "프롤로그의 약관 화면. 이번에는 항목을 하나씩 누를 수 있다. 필수는 꺼지지 않는다.", () => over(consentScreen({ clock: "7:10", checked: VOICE_APP.consents.map((_, index) => index !== 3), tappable: true }), R.counter(13))],
       ["rw-night", "새로운 그날 밤", "앞으로 감겨 11:00. 남은 알림 5개와 엄마, 담임의 답.", () => over(lock({ lockNotifs: remaining().reverse(), clock: clockText(NEW_NIGHT) }), R.counter(5))],
-      ["ending", "엔딩", "47과 5, 바꾼 것 네 가지. 카드를 뒤집으면 출처와 요건. 다 뒤집으면 두 줄 아래 \"도움받을 수 있는 곳\", 그 아래 \"처음부터 다시 하기\"(테두리)와 \"공유하기\"(메인).", () => R.ending(remaining(), [0, 1, 2, 3, 4], true)],
+      ["ending", "엔딩", "47 → 5, 내가 바꾼 것 네 가지, \"남은 5개는 누구의 몫일까요?\"와 남은 알림 카드. 카드를 다 뒤집으면 한 줄과 \"도움받을 수 있는 곳\", \"처음부터 다시 하기\".", () => R.ending(remaining(), [0, 1, 2, 3, 4], { done: true })],
     ],
   },
 ];

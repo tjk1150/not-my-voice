@@ -215,7 +215,8 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
     const flipped = [];
     ov.innerHTML = "";
     side.time.innerHTML = "<b>엔딩</b>";
-    show(R.ending(items, flipped, false));
+    show(R.ending(items, flipped, { intro: true }));
+    const screen = scr.querySelector(".screen.end");
     sfx.chime();
     bgm.play("ending");
     for (;;) {
@@ -229,11 +230,20 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
         ov.innerHTML = "";
         continue;
       }
+      // Flip in place, so the card turns and nothing above it redraws; the next card takes the blink.
       const index = Number(key.slice(5));
-      if (!flipped.includes(index)) flipped.push(index);
-      show(R.ending(items, flipped, flipped.length === items.length));
-      const cards = scr.querySelector(".e-cards");
-      if (flipped.length === items.length) cards?.scrollIntoView?.({ block: "nearest" });
+      if (flipped.includes(index)) continue;
+      flipped.push(index);
+      const cards = [...screen.querySelectorAll(".e-card")];
+      cards.forEach((el) => el.classList.remove("blink"));
+      cards[index].classList.add("flip");
+      const next = cards.findIndex((_, at) => !flipped.includes(at));
+      if (next >= 0) cards[next].classList.add("blink");
+      else {
+        screen.insertAdjacentHTML("beforeend", R.endingTail());
+        icons();
+        screen.querySelector(".e-tail")?.scrollIntoView?.({ behavior: "smooth", block: "end" });
+      }
     }
   }
 

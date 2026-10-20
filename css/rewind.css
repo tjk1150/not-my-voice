@@ -78,24 +78,36 @@
 .vu-row span { flex: 1; } .vu-row em { font-style: normal; color: var(--ink-2); font-size: 14px; } .vu-row > svg:last-child { color: #a0a6ae; }
 
 /* New night and ending */
+/* Ending spacing: 24 side margins, 32 between sections, 12 from a label to its content, 8 between cards */
+.screen.end { background: #fff; overflow-y: auto; scrollbar-width: none; padding: 72px 24px 48px; word-break: keep-all; }
+.e-big { font-size: 44px; line-height: 52px; font-weight: 800; letter-spacing: -1px; color: #111; }
+.e-big b { color: #d0021b; }
+.e-sub { margin-top: 8px; font-size: 16px; line-height: 24px; color: #3a3f47; }
+.e-sec { margin-top: 32px; }
+.e-label { font-size: 13px; line-height: 18px; font-weight: 700; color: var(--ink-2); }
+.e-checks { list-style: none; margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.e-checks li { display: flex; align-items: center; gap: 10px; font-size: 15px; line-height: 22px; color: #1d2433; }
+.e-checks svg { flex: none; color: #2e9e5b; }
+.e-q { font-size: 20px; line-height: 28px; font-weight: 800; color: #111; }
+.e-tip { margin-top: 4px; font-size: 14px; line-height: 20px; color: var(--ink-2); }
+.e-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; perspective: 900px; }
+.e-note { font-size: 15px; line-height: 23px; color: #3a3f47; }
+.e-help-btn { margin-top: 16px; width: 100%; height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border: 0; border-radius: 14px; background: #f0f2f5; color: var(--ink); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+.e-btns { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.e-intro .rise { opacity: 0; animation: rise .5s ease-out forwards; }
+.e-intro .rise:nth-child(2) { animation-delay: .35s; } .e-intro .rise:nth-child(3) { animation-delay: .7s; }
+.e-tail { animation: rise .5s ease-out; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.no-motion .e-intro .rise, .no-motion .e-tail { animation: none; opacity: 1; }
 .rw-next { position: absolute; left: 24px; right: 24px; bottom: 44px; height: 52px; border: 0; border-radius: 14px; background: #fff; color: var(--ink); font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; }
-.screen.end { background: #fff; overflow-y: auto; scrollbar-width: none; padding: 62px 22px 40px; }
-.e-lines p { font-size: 16px; line-height: 26px; color: #3a3f47; }
-.e-lines p:nth-child(2) { animation-delay: .4s; } .e-lines p:nth-child(3) { animation-delay: .8s; margin-top: 4px; }
-.e-lines b { font-size: 22px; color: #d0021b; }
-.e-tip { margin-top: 18px; font-size: 13px; color: var(--ink-2); }
-.e-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; perspective: 900px; }
 .e-card { position: relative; height: 84px; cursor: pointer; border-radius: 18px; transform-style: preserve-3d; transition: transform .5s; }
 .e-card.flip { transform: rotateX(180deg); }
 .e-front, .e-back { position: absolute; inset: 0; backface-visibility: hidden; }
 .e-front .ncard { position: static; margin: 0; height: 100%; box-sizing: border-box; background: #f0f2f5; }
-.e-back { transform: rotateX(180deg); border-radius: 18px; background: #1d2433; color: #fff; padding: 10px 14px; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; column-gap: 8px; align-content: center; }
+.e-back { transform: rotateX(180deg); border-radius: 18px; background: #1d2433; color: #fff; padding: 12px 16px; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; column-gap: 8px; align-content: center; }
 .e-back b { font-size: 15px; } .e-back span { grid-column: 1; font-size: 13px; line-height: 17px; opacity: .85; }
 .e-back em { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-style: normal; font-size: 12px; font-weight: 700; padding: 5px 8px; border-radius: 8px; background: #3442c9; white-space: nowrap; }
-.e-q { margin-top: 22px; } .e-q b { display: block; font-size: 19px; line-height: 27px; } .e-q span { display: block; margin-top: 8px; font-size: 15px; line-height: 23px; color: #3a3f47; }
-.e-help-btn { margin-top: 14px; width: 100%; height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border: 0; border-radius: 14px; background: #f0f2f5; color: var(--ink); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
 .e-help-btn svg:last-child { margin-left: auto; color: var(--ink-2); }
-.e-btns { display: flex; flex-direction: column; gap: 8px; margin-top: 22px; }
 .e-btns button, .e-btns a { display: flex; align-items: center; justify-content: center; gap: 6px; }
 .e-btns button, .e-btns a, .e-help button { height: 50px; border: 0; border-radius: 14px; background: #f0f2f5; font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; }
 .e-btns .main { text-decoration: none; background: var(--blue); color: #fff; }

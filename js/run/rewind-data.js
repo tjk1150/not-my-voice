@@ -61,11 +61,11 @@ export const WARM = [
 
 // Where each remaining notification came from (same order as the R notifications in the timeline).
 export const REMAINING = [
-  { who: "처음 공유한 친구", why: "받은 영상을 확인 없이 퍼뜨렸어요", req: "① 인권 보장" },
-  { who: "합성 앱", why: "본인 확인 없이 실제 사람 목소리로 말을 만들게 했어요", req: "④ 침해금지 · ⑨ 안전성" },
-  { who: "추천", why: "자극적인 영상을 더 많은 사람에게 밀어 줬어요", req: "⑤ 공공성" },
-  { who: "신고 처리", why: "\"검토 중\"만 반복했어요", req: "⑧ 책임성" },
-  { who: "AI 표시", why: "AI로 만들었다는 표시가 없어 진짜처럼 보였어요", req: "⑩ 투명성" },
+  { who: "처음 공유한 친구", why: "받은 영상을 확인하지 않고 퍼뜨렸어요", req: "① 인권 보장" },
+  { who: "목소리 합성 앱", why: "본인인지 확인하지 않고 내 목소리로 말을 만들게 했어요", req: "④ 침해금지 · ⑨ 안전성" },
+  { who: "추천 알고리즘", why: "자극적인 영상을 더 많은 사람에게 보여 줬어요", req: "⑤ 공공성" },
+  { who: "신고 처리", why: "신고해도 \"검토 중\"이라는 답만 왔어요", req: "⑧ 책임성" },
+  { who: "AI 표시 없는 영상", why: "AI로 만든 영상이라는 표시가 없어 진짜처럼 보였어요", req: "⑩ 투명성" },
 ];
 
 // The lesson card's button: back to an earlier stop, or (after the last stop) forward to the night itself.
@@ -74,7 +74,16 @@ export const LESSON_BUTTON = { back: "계속 되감기", forward: "바뀐 그날
 // Stop 1: the player's answer when mom asks whether the reel was reported.
 export const MOM_REPLY = "아직. 지금 신고할게";
 
-export const CHANGED = "알리기, 학교와 반 지우기, 공개 범위, 선택 동의";
+export const CHANGED = ["어른에게 알리고 신고하기", "프로필에서 학교와 반 지우기", "브이로그 계정 비공개로 바꾸기", "앱의 선택 동의 끄기"];
+
+// Ending copy: the drop, what the player changed, then the question over the five cards that remain.
+export const END = {
+  sub: "같은 밤, 알림이 47개에서 5개로 줄었어요.",
+  changed: "내가 바꾼 것",
+  question: "남은 5개는 누구의 몫일까요?",
+  tip: "남은 알림을 하나씩 눌러 보세요",
+  note: "조심하면 피해를 줄일 수 있어요. 하지만 잘못은 영상을 만들고 퍼뜨린 쪽에 있어요.",
+};
 
 export const HELP = [
   ["phone", "117", "학교폭력 신고·상담, 24시간 (문자 #0117)"],

@@ -5,7 +5,7 @@ import { face } from "../faces.js";
 import { card } from "../ios-screens.js";
 import { msg } from "../talk-screens.js";
 import { reels, moreSheet, reportReasons, reportDone, privacy } from "../feed-screens.js";
-import { REMAINING, CHANGED, HELP, LESSON_BUTTON } from "./rewind-data.js";
+import { REMAINING, CHANGED, HELP, LESSON_BUTTON, END } from "./rewind-data.js";
 import { SURVEY } from "../data.js";
 
 // The vlog frame (generated-images/ai-ethics/vlog-sticker.png, resized).
@@ -109,8 +109,9 @@ export const privacyAt = (clock, stage) => {
   return privacy(false).replace('<span class="toggle blink"></span>', '<span class="toggle on"></span>').replace("4:20", clock);
 };
 
-// Ending.
-export function ending(items, flipped, showQuestion) {
+// Ending: the drop, what changed, and the question over the remaining cards. Cards flip in place
+// (rewind.js toggles their class), and the closing part is added once all five are turned.
+export function ending(items, flipped = [], { intro = false, done = false } = {}) {
   const next = items.findIndex((_, index) => !flipped.includes(index));
   const cards = items
     .map((item, index) => {
@@ -120,17 +121,17 @@ export function ending(items, flipped, showQuestion) {
     })
     .join("");
   return `
-  <div class="screen end">
-    <div class="e-lines"><p class="pop">처음 맞은 밤: 알림 <b>47</b>개</p><p class="pop">다시 맞은 밤: 알림 <b>5</b>개</p><p class="pop">당신이 바꾼 것: ${CHANGED}</p></div>
-    <p class="e-tip">카드를 눌러 어디서 온 알림인지 보세요</p>
-    <div class="e-cards">${cards}</div>
-    ${showQuestion
-      ? `<div class="e-q pop"><b>남은 알림 5개. 이건 누구의 몫일까요?</b><span>조심은 피해를 줄이는 방법이에요. 피해의 책임이 당신에게 있다는 뜻은 아니에요.</span></div>
-         <button class="e-help-btn pop" data-r="help">${ic("life-buoy", 18, 2)} 도움받을 수 있는 곳 ${ic("chevron-right", 18, 2)}</button>
-         <div class="e-btns pop"><button class="line" data-r="restart">처음부터 다시 하기</button>${SURVEY.url ? `<a class="main" href="${SURVEY.url}" target="_blank" rel="noopener">${ic("clipboard-list", 18, 2.2)} ${SURVEY.label}</a>` : ""}</div>`
-      : ""}
+  <div class="screen end ${intro ? "e-intro" : ""}">
+    <section class="e-head rise"><div class="e-big">47 → <b>5</b></div><p class="e-sub">${END.sub}</p></section>
+    <section class="e-sec rise"><h3 class="e-label">${END.changed}</h3><ul class="e-checks">${CHANGED.map((text) => `<li>${ic("circle-check", 18, 2.2)}${text}</li>`).join("")}</ul></section>
+    <section class="e-sec rise"><h2 class="e-q">${END.question}</h2><p class="e-tip">${END.tip}</p><div class="e-cards">${cards}</div></section>
+    ${done ? endingTail() : ""}
   </div>`;
 }
+
+export const endingTail = () => `<section class="e-sec e-tail"><p class="e-note">${END.note}</p>
+  <button class="e-help-btn" data-r="help">${ic("life-buoy", 18, 2)} 도움받을 수 있는 곳 ${ic("chevron-right", 18, 2)}</button>
+  <div class="e-btns"><button class="line" data-r="restart">처음부터 다시 하기</button>${SURVEY.url ? `<a class="main" href="${SURVEY.url}" target="_blank" rel="noopener">${ic("clipboard-list", 18, 2.2)} ${SURVEY.label}</a>` : ""}</div></section>`;
 
 export const helpSheet = () => `<div class="rw-dim" data-r="close"></div><div class="sheet e-help pop"><div class="grab"></div><h3>도움받을 수 있는 곳</h3>
   ${HELP.map(([icon, name, text]) => `<div class="e-h">${ic(icon, 22, 2)}<div><b>${name}</b><span>${text}</span></div></div>`).join("")}
