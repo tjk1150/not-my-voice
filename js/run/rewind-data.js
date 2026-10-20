@@ -78,7 +78,7 @@ export const BIO = [
   { key: "hobby", text: "노래 부르는 거 좋아함", personal: false },
 ];
 
-export const LESSON_BUTTON = { back: "계속 되감기", forward: "바뀐 그날 밤 보기" };
+export const LESSON_BUTTON = { back: "계속 되감기", forward: "다시 재생하기" };
 
 // Stop 1: the player's answer when mom asks whether the reel was reported.
 export const MOM_REPLY = "아직. 지금 신고할게";
