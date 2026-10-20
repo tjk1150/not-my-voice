@@ -3,8 +3,9 @@
 export let ME = "지우";
 
 // Account ids unrelated to the typed name, so they never contradict it (matches the sky profile photo).
-// daejeon: the school's anonymous "대신 전해드립니다" account that posts the fake.
-export const PEOPLE = { meId: "sky-0731", daejeon: "ojung-daejeon" };
+// daejeon: the school's anonymous tip account ("대신 전해드립니다") that posts the fake. Classmates call it
+// "학교 제보 계정" in game, since the slang "대전" reads as the city.
+export const PEOPLE = { meId: "sky-0731", daejeon: "ojung-jebo" };
 
 const PALETTE = ["#8fa6c9", "#c99a8f", "#9fbf9a", "#b9a3d1", "#d4b483", "#86b8b8", "#c98fb0", "#a0a8b5"];
 

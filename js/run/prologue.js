@@ -22,7 +22,7 @@ function nameScreen() {
       <h1>체험을 위해<br>당신의 이름을 입력해 주세요</h1>
       <p>친구들이 메시지에서 이 이름으로 당신을 부릅니다.</p>
       <label class="field"><input id="pname" maxlength="6" autocomplete="off" placeholder="이름" aria-label="이름"></label>
-      <div class="note">${ic("lock", 14, 2)} 이름은 이 기기 안에서만 쓰이고 저장되지 않아요. 녹음이나 촬영은 하지 않아요.</div>
+      <div class="note">${ic("lock", 14, 2)} 이름은 이 기기 안에서만 쓰이고 저장되지 않아요.<br>녹음이나 촬영은 하지 않아요.</div>
     </div>
     <button class="btn-main" style="top:760px" data-p="name-go" disabled>다음</button>
   </div>`;
@@ -71,7 +71,12 @@ export function runPrologue(scr, { icons }) {
         await wait(200);
         bar.style.width = `${Math.round((step / LEARN_STEPS) * 100)}%`;
       }
-      await wait(300);
+      // The player confirms the finished voice, as the app would ask.
+      st.rec = "learned";
+      show(recordScreen(st));
+    }
+
+    async function afterLearned() {
       st.clock = "7:12";
       sfx.learned();
       show(doneScreen(st));
@@ -107,6 +112,7 @@ export function runPrologue(scr, { icons }) {
       else if (key === "agree") run(afterAgree);
       else if (key.startsWith("song-")) run(() => afterSong(Number(key.slice(5))));
       else if (key === "mic") run(afterMic);
+      else if (key === "learned") run(afterLearned);
     }, { signal: abort.signal });
   });
 }

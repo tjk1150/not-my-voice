@@ -9,7 +9,7 @@ import * as R from "./rewind-views.js";
 import { bgm } from "./bgm.js";
 import { lock } from "./views.js";
 import { wait, easeInOut, dayText, timeText, clockText } from "../utils.js";
-import { LESSON_BUTTON, MOM_REPLY } from "./rewind-data.js";
+import { LESSON_BUTTON, MOM_REPLY, BIO } from "./rewind-data.js";
 
 
 export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
@@ -110,10 +110,8 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
       if (!last) await wait(700);
     }
     await tap("reply");
-    show(R.momRoom(clock, [...lines, ...replies, { who: "me", text: MOM_REPLY, time: `오후 ${clock}` }], { blinkBack: true }));
-    await tap("back");
-    show(R.reelMore(clock));
-    await tap("more");
+    show(R.momRoom(clock, [...lines, ...replies, { who: "me", text: MOM_REPLY, time: `오후 ${clock}` }]));
+    await wait(900);
     show(R.moreAt(clock));
     await tap("report");
     show(R.reportAt(clock));
@@ -127,15 +125,22 @@ export function runRewind({ root, scr, ov, icons, vibrate, sfx, side }) {
   async function stopTwo(stop) {
     const clock = clockText(stop.at);
     await ask(stop, R.profileEdit(clock));
+    // Every personal item has to go; the hobby stays (it cannot lead anyone to me).
+    const removed = [];
     let misses = 0;
-    while ((await tap("bio-school", "bio-hobby")) === "bio-hobby") {
-      misses += 1;
-      show(R.profileEdit(clock, { blinkSchool: misses > 1 }));
-      toast("취미만으로는 당신을 찾기 어려워요. 다른 말을 찾아보세요.");
+    const left = () => BIO.filter((item) => item.personal && !removed.includes(item.key));
+    while (left().length) {
+      const key = (await tap(...BIO.filter((item) => !removed.includes(item.key)).map((item) => `bio-${item.key}`))).slice(4);
+      const item = BIO.find((entry) => entry.key === key);
+      if (item.personal) removed.push(key);
+      else {
+        misses += 1;
+        toast("취미만으로는 당신을 찾기 어려워요. 다른 말을 찾아보세요.");
+      }
+      show(R.profileEdit(clock, { removed, hint: misses > 1, blinkDone: !left().length }));
     }
-    show(R.profileEdit(clock, { school: false, blinkDone: true }));
     await tap("done");
-    show(R.profileEdit(clock, { school: false }));
+    show(R.profileEdit(clock, { removed, saved: true }));
     await shatter(stop);
   }
 

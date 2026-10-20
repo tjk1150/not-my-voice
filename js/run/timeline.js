@@ -21,7 +21,7 @@ export const buildPhase1 = () => [
   n(2, "S4", "feed", "2-3 우리반", "서연: 수아한테 이게 무슨 말이야?", { to: "dm-group" }),
   n(3, "S3", "feed", "2-3 우리반", "새 메시지 12개", { to: "dm-group" }),
   { t: 15, type: "call" },
-  n(40, "S2", "feed", "예린", "너 대전에 태그돼 있던데", { to: "dm:yerin", room: "dm:yerin", msg: { who: "예린", text: "너 대전에 태그돼 있던데" } }),
+  n(40, "S2", "feed", "예린", "너 학교 제보 계정에 태그돼 있던데", { to: "dm:yerin", room: "dm:yerin", msg: { who: "예린", text: "너 학교 제보 계정에 태그돼 있던데" } }),
   line(41, "dm:yerin", "예린", "진짜 수아한테 그랬어?"),
   n(47, "S1", "feed", "2-3 우리반", "서연: 수아한테 사과는 해야지", { to: "dm-group", nudge: true }),
   n(50, "S1", "feed", "하린", "괜찮아? 이거 진짜 너 아니지? 말 좀 해봐", { to: "dm:harin", room: "dm:harin", msg: { who: "하린", text: "괜찮아?" } }),
@@ -29,7 +29,7 @@ export const buildPhase1 = () => [
   line(52, "dm:harin", "하린", "말 좀 해봐"),
   // Act 2, it spreads: the same reel keeps arriving in my DMs, from farther and farther away (#8-15).
   // The player opens the first one and sees the numbers climb; there is nothing to do but watch.
-  share(53, "S2", "dm:minjae", "민재", "너네 반 걔 맞지? 대전에 태그돼 있던데", { act: [PEOPLE.daejeon, "님이 회원님을 릴스에 태그했습니다."] }),
+  share(53, "S2", "dm:minjae", "민재", "너네 반 걔 맞지? 학교 제보 계정에 태그돼 있던데", { act: [PEOPLE.daejeon, "님이 회원님을 릴스에 태그했습니다."] }),
   request(58, "S2", "moon-k", "너가 그 ○○중 2-3 걔임?", true, { act: ["jimin-2-3", "님 외 22명이 회원님이 태그된 릴스를 좋아합니다."] }),
   share(62, "R", "dm:jiwon", "지원", "추천에 떠서 봤어. 이거 너 아니지?"),
   share(68, "S3", "dm:yuna", "유나", "학원 애들 다 봄. 브이로그 목소리랑 완전 똑같던데", { act: ["dream-09", "님이 회원님의 게시물에 댓글을 남겼습니다: 브이로그 목소리랑 완전 똑같네", "post"] }),

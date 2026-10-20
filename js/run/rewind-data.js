@@ -20,10 +20,10 @@ export const STOPS = [
     tag: "S2",
     at: new Date(2026, 9, 14, 21, 15),
     when: "멈춤 2 · 5일 전 오후 9:15",
-    ask: "프로필을 고치던 순간이에요.<br>모르는 사람이 이 프로필로 당신을 찾을 수 있는 말을 눌러 지워 보세요.",
+    ask: "프로필을 고치던 순간이에요.<br>모르는 사람이 이 프로필로 당신을 찾을 수 있는 말을 모두 눌러 지워 보세요.",
     lesson: {
-      title: "학교와 반은 나를 찾아오는 길",
-      text: "프로필의 학교와 반은 모르는 사람이 내 계정을 찾아 태그하고 연락하는 길이 돼요. 친구들은 소개를 보지 않아도 나를 알아요.",
+      title: "학교, 생일, 동네, 학원은 나를 찾아오는 길",
+      text: "프로필에 적은 학교와 반, 생일, 사는 동네, 다니는 학원은 모르는 사람이 나를 찾아 태그하고 연락하는 길이 돼요. 친구들은 소개를 보지 않아도 나를 알아요.",
       tags: ["② 프라이버시 보호"],
     },
   },
@@ -69,12 +69,21 @@ export const REMAINING = [
 ];
 
 // The lesson card's button: back to an earlier stop, or (after the last stop) forward to the night itself.
+// Stop 2: the bio, token by token. Personal ones point strangers to me; the hobby does not.
+export const BIO = [
+  { key: "school", text: "○○중 2-3", personal: true },
+  { key: "birth", text: "3월 14일생", personal: true },
+  { key: "town", text: "○○동", personal: true },
+  { key: "academy", text: "○○수학학원", personal: true },
+  { key: "hobby", text: "노래 부르는 거 좋아함", personal: false },
+];
+
 export const LESSON_BUTTON = { back: "계속 되감기", forward: "바뀐 그날 밤 보기" };
 
 // Stop 1: the player's answer when mom asks whether the reel was reported.
 export const MOM_REPLY = "아직. 지금 신고할게";
 
-export const CHANGED = ["어른에게 알리고 신고하기", "프로필에서 학교와 반 지우기", "브이로그 계정 비공개로 바꾸기", "앱의 선택 동의 끄기"];
+export const CHANGED = ["어른에게 알리고 신고하기", "프로필에서 학교, 생일, 동네, 학원 지우기", "브이로그 계정 비공개로 바꾸기", "앱의 선택 동의 끄기"];
 
 // Ending copy: the drop in one line, what the player changed, then the question over the five cards that remain.
 export const END = {

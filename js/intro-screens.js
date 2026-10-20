@@ -30,7 +30,7 @@ export function nameInput() {
       <h1>체험을 위해<br>당신의 이름을 입력해 주세요</h1>
       <p>친구들이 메시지에서 이 이름으로 당신을 부릅니다.</p>
       <div class="field">${ME}<i class="caret"></i></div>
-      <div class="note">${ic("lock", 14, 2)} 이름은 이 기기 안에서만 쓰이고 저장되지 않아요. 녹음이나 촬영은 하지 않아요.</div>
+      <div class="note">${ic("lock", 14, 2)} 이름은 이 기기 안에서만 쓰이고 저장되지 않아요.<br>녹음이나 촬영은 하지 않아요.</div>
     </div>
     <div class="btn-main blink" style="top:760px">다음</div>
     <i class="home-ind"></i>

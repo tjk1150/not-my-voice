@@ -5,7 +5,7 @@ import { face } from "../faces.js";
 import { card } from "../ios-screens.js";
 import { msg } from "../talk-screens.js";
 import { reels, moreSheet, reportReasons, reportDone, privacy } from "../feed-screens.js";
-import { REMAINING, CHANGED, HELP, LESSON_BUTTON, END } from "./rewind-data.js";
+import { REMAINING, CHANGED, HELP, LESSON_BUTTON, END, BIO } from "./rewind-data.js";
 import { SURVEY } from "../data.js";
 
 // The vlog frame (generated-images/ai-ethics/vlog-sticker.png, resized).
@@ -66,18 +66,19 @@ export function momRoom(clock, lines, { blinkBack = false, reply = "" } = {}) {
 
 export const shotBubble = () => `<img class="k-shot" src="${VLOG_IMG}" alt="스크린샷">`;
 
-// Back on the reel after mom's question: its "…" menu is where reporting starts.
-export const reelMore = (clock) => reels().replace('<span class="a blink"', '<span class="a blink" data-r="more"').replace("11:04", clock);
 export const moreAt = (clock) => moreSheet().replace('<div class="row red blink">', '<div class="row red blink" data-r="report">').replace('<span class="a blink"', '<span class="a"').replace("11:04", clock);
 export const reportAt = (clock) => reportReasons().replace(/<div class="li ([^"]*)"><span>(합성[^<]*)<\/span>/, '<div class="li blink" data-r="fake"><span>$2</span>').replace("11:05", clock);
 export const reportDoneAt = (clock) => reportDone().replace('<div class="btn-main" style="top:748px">', '<div class="btn-main blink" style="top:748px" data-r="done">').replace("11:06", clock);
 
-// Stop 2: the profile editor five days earlier. Both bio items blink as editable candidates, so the
-// blink shows what can be changed without giving the answer; after two misses only the school blinks.
-export function profileEdit(clock, { school = true, blinkSchool = false, blinkDone = false } = {}) {
+// Stop 2: the profile editor five days earlier. Every bio item blinks as an editable candidate, so the
+// blink shows what can be changed without giving the answer; after two misses only personal ones blink.
+// removed: keys already deleted; hint: only personal items blink; blinkDone: all personal ones are gone;
+// saved: after 완료, nothing blinks.
+export function profileEdit(clock, { removed = [], hint = false, blinkDone = false, saved = false } = {}) {
   const field = (label, value) => `<div class="pe-f"><label>${label}</label><div>${value}</div></div>`;
-  const hobbyBlink = school && !blinkSchool ? "blink" : "";
-  const bio = `${school ? `<span class="tok blink" data-r="bio-school">○○중 2-3</span> · ` : ""}<span class="tok ${hobbyBlink}" data-r="bio-hobby">노래 부르는 거 좋아함</span>`;
+  const bio = BIO.filter((item) => !removed.includes(item.key))
+    .map((item) => `<span class="tok ${saved || blinkDone || (hint && !item.personal) ? "" : "blink"}" data-r="bio-${item.key}">${item.text}</span>`)
+    .join(" · ");
   return `
   <div class="screen">
     ${statusBar(clock)}

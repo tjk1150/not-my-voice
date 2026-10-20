@@ -21,7 +21,7 @@ export const groupScript = () => [
 ];
 
 // The class room keeps going at 0:47 (a player who has not answered also gets "읽씹 실화?").
-export const STAYED_LINES = [say("지민", "읽씹 실화?"), say("서연", "수아한테 사과는 해야지"), say("지민", "대전에도 올라왔더라ㅋㅋ 다른 학교 애들도 봄")];
+export const STAYED_LINES = [say("지민", "읽씹 실화?"), say("서연", "수아한테 사과는 해야지"), say("지민", "제보 계정에도 올라왔더라ㅋㅋ 다른 학교 애들도 봄")];
 
 // The player tries to explain three times, by picking a reply chip, and each try fails differently:
 // the class mocks it, a friend doubts it, and 수아 cannot be reached. "after" waits for the room's own

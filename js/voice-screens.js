@@ -55,9 +55,11 @@ export function songScreen(st) {
 
 // st.rec: "idle" | "rec" | "learn" ; st.sec counts the fake recording ; st.learn is 0..1.
 export function recordScreen(st) {
-  const state = { idle: "버튼을 누르면 녹음이 시작돼요", rec: `녹음 중 0:${String(st.sec || 0).padStart(2, "0")} / 0:10`, learn: "AI가 내 목소리를 배우고 있어요" }[st.rec];
+  const state = { idle: "버튼을 누르면 녹음이 시작돼요", rec: `녹음 중 0:${String(st.sec || 0).padStart(2, "0")} / 0:10`, learn: "AI가 내 목소리를 배우고 있어요", learned: "내 목소리를 다 배웠어요" }[st.rec];
   const control =
-    st.rec === "learn"
+    st.rec === "learned"
+      ? `<div class="vp-progress"><i style="width:100%"></i></div>`
+      : st.rec === "learn"
       ? `<div class="vp-progress"><i style="width:${Math.round((st.learn || 0) * 100)}%"></i></div>`
       : `<span class="vp-mic ${st.rec === "rec" ? "rec" : "blink"}" ${st.rec === "idle" ? 'data-p="mic"' : ""}>${ic(st.rec === "rec" ? "square" : "mic", 34, 2.2, st.rec === "rec" ? 'fill="currentColor"' : "")}</span>`;
   return `
@@ -72,6 +74,7 @@ export function recordScreen(st) {
       <p class="vp-state">${state}</p>
     </div>
     <div class="vp-control">${control}</div>
+    ${st.rec === "learned" ? '<button class="vp-btn on blink" data-p="learned">확인</button>' : ""}
   </div>`;
 }
 
